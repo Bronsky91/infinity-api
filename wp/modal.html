@@ -1,0 +1,154 @@
+<style>
+    /* The Modal (background) */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #3d5a80;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaa;
+        left: 0;
+        top: 0;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-container input[type="email"] {
+        padding: 10px;
+        margin: 10px 10px;
+        margin-bottom: 30px;
+        width: 80%;
+        max-width: 400px;
+    }
+
+    .form-container button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+
+
+<body>
+    <!-- Modal Structure -->
+    <div id="sendMapModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="form-container">
+                <h2 style="color:white; inline-size: auto;">Send Map</h2>
+                <div id="emailLeftBlankMsg" style="color: lightcoral">* Required</div>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <a href="javascript:void();"
+                    class="button is- primary is- box-shadow-0 box-shadow-0-hover uxb-draggable sendMapBtn"
+                    ng-class="{'reveal-icon' : shortcode.options.iconReveal &amp;&amp; shortcode.options.icon, 'expand' :  shortcode.options.expand}"
+                    ng-style="{'padding' : shortcode.options.padding, 'border-radius' : shortcode.options.radius+'px'}"
+                    style="border-radius: 0px; touch-action: none;">
+
+                    <!---->
+
+                    <span>Send</span>
+
+                    <!---->
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal JavaScript -->
+    <script>
+        jQuery(document).ready(function ($) {
+            // Get the modal
+            var modal = $("#sendMapModal");
+
+            var openBtn = $(".openSendModal");
+            var sendBtn = $('.sendMapBtn')
+            var emailErrorMsg = $("#emailLeftBlankMsg")
+            emailErrorMsg.hide()
+            var emailInput = $('#email')
+
+            // Get the <span> element that closes the modal
+            var span = $(".close");
+
+            function validateEmail(email) {
+                var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            // When the user clicks the button, open the modal 
+            openBtn.on("click", function (e) {
+                e.preventDefault();
+                modal.addClass('show');
+            });
+
+            // When the user clicks on <span> (x), close the modal
+            span.on("click", function () {
+                modal.removeClass('show');
+            });
+
+            sendBtn.on('click', function () {
+                var email = emailInput.val()
+                console.log('email', email)
+                console.log('validated', validateEmail(email))
+                if (validateEmail(email)) {
+                    modal.removeClass('show');
+                    emailErrorMsg.hide()
+                    emailInput.val('')
+
+                    // TODO: Wait til the send operation is complete before closing
+                    console.log("SENDING MAP VIA EMAIL", email)
+
+                    $('.map-complete').hide();
+
+                    $(".map-preview").show()
+                } else {
+                    emailErrorMsg.show()
+                }
+            })
+
+            // When the user clicks anywhere outside of the modal, close it
+            $(window).on("click", function (event) {
+                if ($(event.target).is(modal)) {
+                    modal.removeClass('show');
+                }
+            });
+        });
+    </script>

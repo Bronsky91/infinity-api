@@ -1,7 +1,20 @@
 <script>
   jQuery(document).ready(function ($) {
+
+    $(".map-loading").hide();
+    $('.map-complete').hide();
+
     $(".generateBtn").on("click", function (e) {
       e.preventDefault();
+
+
+      $('.map-complete').hide();
+
+      // Hide Preview
+      $(".map-preview").hide()
+
+      // Show loading indicator
+      $(".map-loading").show();
 
       $.ajax({
         url: infinity_vars.ajaxurl,
@@ -15,8 +28,13 @@
           var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
           var url = URL.createObjectURL(blob);
 
+          // hide loading indicator
+          $(".map-loading").hide();
+
           // Display the image
-          $("#downloadedImage").attr("src", url).show();
+          $("#generatedMap").attr("src", url)
+
+          $('.map-complete').show();
         },
         error: function (xhr, status, error) {
           console.error("AJAX error:", error);

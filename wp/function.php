@@ -18,6 +18,7 @@ flatsome()->init();
 
 
 // To bad here's my custom code.
+
 function custom_override_checkout_fields( $fields ) {
     // List of fields to unset (remove)
     unset($fields['billing']['billing_first_name']);
@@ -39,7 +40,7 @@ function enqueue_custom_scripts() {
     wp_enqueue_script('jquery');
 
     // Localize script to pass AJAX URL and nonce
-    wp_localize_script('custom-ajax', 'infinity_vars', array(
+    wp_localize_script('jquery', 'infinity_vars', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
         'security' => wp_create_nonce('download_file_nonce')
     ));
@@ -50,7 +51,7 @@ function download_file_from_api() {
     check_ajax_referer('download_file_nonce', 'security');
 
     // Ngrok URL (replace with your ngrok URL)
-    $api_url = 'https://abcd1234.ngrok.io/download'; // Use your ngrok URL
+    $api_url = 'https://e193-184-98-10-147.ngrok-free.app/download'; // Use your ngrok URL
 
     // Initialize cURL session
     $ch = curl_init();
@@ -73,6 +74,8 @@ function download_file_from_api() {
     // Terminate to avoid further output
     wp_die();
 }
+
+
 
 add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
 

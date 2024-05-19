@@ -21,9 +21,9 @@ const sendMail = (email, filePath) => {
   const mg = mailgun({ apiKey: API_KEY, domain: DOMAIN });
 
   const data = {
-    from: 'Excited User <bronsky@sandbox91a3c218fa1a4fe6a5c44e86c626fb59.mailgun.org>',
+    from: 'Arcane Collector <bronsky@infinity.arcanecollector.com>',
     to: email,
-    subject: 'Hello',
+    subject: 'New Map Generated!',
     text: 'Testing some Mailgun awesomeness!',
     attachment: path.join(__dirname, filePath)
   };

@@ -133,12 +133,28 @@
                     emailErrorMsg.hide()
                     emailInput.val('')
 
-                    // TODO: Wait til the send operation is complete before closing
-                    console.log("SENDING MAP VIA EMAIL", email)
+                    $.ajax({
+                        url: infinity_vars.ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'send_email',
+                            security: infinity_vars.security,
+                            email
+                        },
+                        success: function (response) {
+                            console.log('Email sent:', response);
 
-                    $('.map-complete').hide();
+                            $('.map-complete').hide();
+                            $(".map-preview").show()
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', error);
 
-                    $(".map-preview").show()
+                            $('.map-complete').hide();
+                            $(".map-preview").show()
+                        }
+                    });
+
                 } else {
                     emailErrorMsg.show()
                 }

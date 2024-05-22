@@ -88,7 +88,7 @@ app.get("/download", async (req, res) => {
   const pythonInterpreter = os.platform() === 'win32'
     ? path.join(__dirname, '../../Mythical_Maps/venv/Scripts/python.exe')
     : path.join(__dirname, '../../Mythical_Maps/venv/bin/python');
-  const scriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon.py`);
+  const scriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon_args.py`);
   const outputDir = path.join(__dirname, `../../Mythical_Maps/dungeon/finished/`);
   const options = { cwd: path.dirname(scriptPath) };
 

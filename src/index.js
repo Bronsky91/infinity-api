@@ -27,8 +27,12 @@ mongoose.connect(MONGO_CONNECTION_STRING).then(() => {
 const pythonInterpreter = os.platform() === 'win32'
   ? path.join(__dirname, '../../Mythical_Maps/venv/Scripts/python.exe')
   : path.join(__dirname, '../../Mythical_Maps/venv/bin/python');
-const scriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon_args.py`);
-const outputDir = path.join(__dirname, `../../Mythical_Maps/dungeon/finished/`);
+
+const dungeonScriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon_args.py`);
+const roadScriptPath = path.join(__dirname, `../../Mythical_Maps/road/rd_road_args.py`);
+const tavernScriptPath = path.join(__dirname, `../../Mythical_Maps/tavern/rd_tavern_args.py`);
+
+const outputDir = path.join(__dirname, `../../Mythical_Maps/finished/`);
 
 const emailSchema = new mongoose.Schema({
   email: {
@@ -82,7 +86,7 @@ app.post('/sendmap', (req, res) => {
 
   if (email) {
     saveEmail(email)
-    sendMail(email, outputDir + filename);
+    sendMail(email, dungeonOutputDir + filename);
     res.status(200).send({ message: "Email sent successfully!" });
   } else {
     res.status(400).send({ error: "Email is required" });
@@ -91,10 +95,37 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
+  const { type, size, grid } = req.query;
+
+  let scriptPath;
+  let params = ''
+
+  if (grid) {
+    params += ` --grid_type ${grid}`;
+  }
+
+  switch (type) {
+    case 'tavern':
+      scriptPath = tavernScriptPath;
+      break;
+    case 'road':
+      scriptPath = roadScriptPath;
+      if (size) {
+        params += ` --length ${size}`;
+      }
+      break;
+    default:
+      scriptPath = dungeonScriptPath;
+      if (size) {
+        params += ` --tileCount ${size}`;
+      }
+      break;
+  }
+
   const options = { cwd: path.dirname(scriptPath) };
 
   // Run the Python script as a child process
-  exec(`${pythonInterpreter} ${scriptPath}`, options, (error, stdout, stderr) => {
+  exec(`${pythonInterpreter} ${scriptPath} ${params}`, options, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing Python script: ${error.message}`);
       return res.status(500).send("Error occurred while generating the map");

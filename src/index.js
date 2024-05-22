@@ -92,6 +92,11 @@ app.get("/download", async (req, res) => {
   const outputDir = path.join(__dirname, `../../Mythical_Maps/dungeon/finished/`);
   const options = { cwd: path.dirname(scriptPath) };
 
+  console.log('pythonInterpreter', pythonInterpreter)
+  console.log('scriptPath', scriptPath)
+  console.log('outputDir', outputDir)
+  console.log('options', options)
+
   // Run the Python script as a child process
   exec(`${pythonInterpreter} ${scriptPath}`, options, (error, stdout, stderr) => {
     if (error) {

@@ -59,6 +59,7 @@ function download_file_from_api() {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $api_url . '/download');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, true);
 
     // Execute cURL request
     $response = curl_exec($ch);
@@ -66,8 +67,21 @@ function download_file_from_api() {
     if (curl_errno($ch)) {
         echo 'Error:' . curl_error($ch);
     } else {
-        header('Content-Type: image/jpeg'); // Adjust content type as needed
-        echo $response;
+        // Separate headers and body
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+
+        // Pass headers to the client
+        $header_lines = explode("\r\n", $header);
+        foreach ($header_lines as $header_line) {
+            if (!empty($header_line)) {
+                header($header_line);
+            }
+        }
+
+        // Output the body
+        echo $body;
     }
 
     // Close cURL session
@@ -85,15 +99,20 @@ function send_email_via_api() {
 
     // Get the email address from the POST request
     $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    $filename = isset($_POST['filename']) ? sanitize_text_field($_POST['filename']) : '';
 
     if (empty($email)) {
         wp_send_json_error('Email address is required.');
         wp_die();
     }
 
+    if (empty($filename)) {
+        wp_send_json_error('Filename is required.');
+        wp_die();
+    }
 
     // Prepare POST data
-    $post_data = json_encode(array('email' => $email));
+    $post_data = json_encode(array('email' => $email, 'filename' => $filename));
 
     // Initialize cURL session
     $ch = curl_init();

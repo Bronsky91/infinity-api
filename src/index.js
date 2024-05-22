@@ -24,6 +24,12 @@ mongoose.connect(MONGO_CONNECTION_STRING).then(() => {
   console.error('Error connecting to MongoDB:', error);
 });
 
+const pythonInterpreter = os.platform() === 'win32'
+  ? path.join(__dirname, '../../Mythical_Maps/venv/Scripts/python.exe')
+  : path.join(__dirname, '../../Mythical_Maps/venv/bin/python');
+const scriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon_args.py`);
+const outputDir = path.join(__dirname, `../../Mythical_Maps/dungeon/finished/`);
+
 const emailSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -54,7 +60,7 @@ const sendMail = (email, filePath) => {
     to: email,
     subject: 'Welcome to Arcane Collector!',
     template: 'fan fusion generated map',
-    attachment: path.join(__dirname, filePath)
+    attachment: filePath
   };
 
   // Send the email
@@ -72,11 +78,11 @@ app.get("/", (req, res) => {
 });
 
 app.post('/sendmap', (req, res) => {
-  const email = req?.body?.email;
+  const { email, filename } = req?.body
 
   if (email) {
     saveEmail(email)
-    sendMail(email, 'map.jpeg');
+    sendMail(email, outputDir + filename);
     res.status(200).send({ message: "Email sent successfully!" });
   } else {
     res.status(400).send({ error: "Email is required" });
@@ -85,17 +91,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const pythonInterpreter = os.platform() === 'win32'
-    ? path.join(__dirname, '../../Mythical_Maps/venv/Scripts/python.exe')
-    : path.join(__dirname, '../../Mythical_Maps/venv/bin/python');
-  const scriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon_args.py`);
-  const outputDir = path.join(__dirname, `../../Mythical_Maps/dungeon/finished/`);
   const options = { cwd: path.dirname(scriptPath) };
-
-  console.log('pythonInterpreter', pythonInterpreter)
-  console.log('scriptPath', scriptPath)
-  console.log('outputDir', outputDir)
-  console.log('options', options)
 
   // Run the Python script as a child process
   exec(`${pythonInterpreter} ${scriptPath}`, options, (error, stdout, stderr) => {
@@ -111,13 +107,28 @@ app.get("/download", async (req, res) => {
 
     // Check if the file exists
     if (fs.existsSync(generatedFilePath)) {
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Filename', filename);
+
       // Send the file to the client
       res.download(generatedFilePath, filename, (err) => {
         if (err) {
           console.error("Error occurred while downloading the file:", err);
           return res.status(500).send("Error occurred while downloading the file");
         }
+
+        // Schedule file deletion after 5 minutes
+        setTimeout(() => {
+          fs.unlink(generatedFilePath, (err) => {
+            if (err) {
+              console.error("Error occurred while deleting the file:", err);
+            } else {
+              console.log(`File ${filename} deleted successfully`);
+            }
+          });
+        }, 5 * 60 * 1000); // 5 minutes in milliseconds
       });
+
     } else {
       console.error("Generated file not found:", generatedFilePath);
       res.status(500).send("Generated file not found");

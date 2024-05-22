@@ -1,6 +1,5 @@
 <script>
   jQuery(document).ready(function ($) {
-
     $(".map-loading").hide();
     $('.map-complete').hide();
 
@@ -22,7 +21,11 @@
           action: "download_file",
           security: infinity_vars.security,
         },
-        success: function (response) {
+        success: function (response, status, xhr) {
+          console.log("response", response);
+          var filename = xhr.getResponseHeader('Filename')
+          $("#current-file-name").text(filename)
+
           // Create a blob from the response
           var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
           var url = URL.createObjectURL(blob);

@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require("express");
 const path = require("path");
+const os = require('os');
 const cors = require("cors");
 const mongoose = require('mongoose');
 const { exec } = require('child_process');
@@ -84,7 +85,9 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const pythonInterpreter = path.join(__dirname, `../../Mythical_Maps/venv/Scripts/python.exe`);
+  const pythonInterpreter = os.platform() === 'win32'
+    ? path.join(__dirname, '../../Mythical_Maps/venv/Scripts/python.exe')
+    : path.join(__dirname, '../../Mythical_Maps/venv/bin/python');
   const scriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon.py`);
   const outputDir = path.join(__dirname, `../../Mythical_Maps/dungeon/finished/`);
   const options = { cwd: path.dirname(scriptPath) };

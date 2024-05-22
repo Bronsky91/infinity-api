@@ -4,6 +4,8 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const mongoose = require('mongoose');
+const { exec } = require('child_process');
+const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -30,11 +32,6 @@ const emailSchema = new mongoose.Schema({
 
 const Email = mongoose.model('Email', emailSchema);
 
-
-const delay = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 const saveEmail = async (email) => {
   try {
     const existingEmail = await Email.findOne({ email });
@@ -52,10 +49,10 @@ const sendMail = (email, filePath) => {
   const mg = mailgun({ apiKey: API_KEY, domain: DOMAIN });
 
   const data = {
-    from: 'Arcane Collector <bronsky@infinity.arcanecollector.com>',
+    from: 'Arcane Collector <info@infinity.arcanecollector.com>',
     to: email,
-    subject: 'New Map Generated!',
-    text: 'Testing some Mailgun awesomeness!',
+    subject: 'Welcome to Arcane Collector!',
+    template: 'fan fusion generated map',
     attachment: path.join(__dirname, filePath)
   };
 
@@ -75,7 +72,7 @@ app.get("/", (req, res) => {
 
 app.post('/sendmap', (req, res) => {
   const email = req?.body?.email;
-  console.log('email', email)
+
   if (email) {
     saveEmail(email)
     sendMail(email, 'map.jpeg');
@@ -85,22 +82,41 @@ app.post('/sendmap', (req, res) => {
   }
 })
 
+
 app.get("/download", async (req, res) => {
-  const filePath = path.join(__dirname, "map.jpeg");
-  // run a child process('python dbscript --name fartface') -> filename
-  // get that file from the tmp dir by the filename, grab that, then send it to the website
+  const pythonInterpreter = path.join(__dirname, `../../Mythical_Maps/venv/Scripts/python.exe`);
+  const scriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon.py`);
+  const outputDir = path.join(__dirname, `../../Mythical_Maps/dungeon/finished/`);
+  const options = { cwd: path.dirname(scriptPath) };
 
-  // Mocking the map generation process that may take a few seconds
-  await delay(5000);
+  // Run the Python script as a child process
+  exec(`${pythonInterpreter} ${scriptPath}`, options, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing Python script: ${error.message}`);
+      return res.status(500).send("Error occurred while generating the map");
+    }
 
-  res.download(filePath, "map.jpeg", (err) => {
-    if (err) {
-      console.error("Error occurred while downloading the file:", err);
-      res.status(500).send("Error occurred while downloading the file");
+    const filename = stdout.trim();
+
+    // stdout should contain the path to the generated file
+    const generatedFilePath = outputDir + filename;
+
+    // Check if the file exists
+    if (fs.existsSync(generatedFilePath)) {
+      // Send the file to the client
+      res.download(generatedFilePath, filename, (err) => {
+        if (err) {
+          console.error("Error occurred while downloading the file:", err);
+          return res.status(500).send("Error occurred while downloading the file");
+        }
+      });
+    } else {
+      console.error("Generated file not found:", generatedFilePath);
+      res.status(500).send("Generated file not found");
     }
   });
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Infinity api listening at http://localhost:${port}`);
 });

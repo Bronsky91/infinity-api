@@ -10,6 +10,7 @@
       var type = $('#type-data').text();
       var size = $('#size-data').text();
       var grid = $('#grid-data').text();
+      var time_of_day = $('#tavern-time-data').text()
 
       // Add parameters to the queryParams object if they are not empty
       if (type) {
@@ -20,6 +21,9 @@
       }
       if (grid) {
         queryParams.grid = grid
+      }
+      if (time_of_day) {
+        queryParams.time_of_day = time_of_day
       }
 
       $('.map-complete').hide();

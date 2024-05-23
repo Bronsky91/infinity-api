@@ -111,7 +111,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const { type, size, grid } = req.query;
+  const { type, size, grid, time_of_day } = req.query;
 
   let scriptPath;
   let params = ''
@@ -123,6 +123,9 @@ app.get("/download", async (req, res) => {
   switch (type) {
     case 'tavern':
       scriptPath = tavernScriptPath;
+      if (time_of_day) {
+        params += ` --time_of_day ${time_of_day}`
+      }
       break;
     case 'road':
       scriptPath = roadScriptPath;

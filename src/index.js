@@ -38,7 +38,15 @@ const emailSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true
+  }, modifiedDate: {
+    type: Date,
+    default: Date.now
   }
+});
+
+emailSchema.pre('save', function (next) {
+  this.modifiedDate = Date.now();
+  next();
 });
 
 const Email = mongoose.model('Email', emailSchema);

@@ -113,6 +113,8 @@ app.post('/sendmap', (req, res) => {
 app.get("/download", async (req, res) => {
   const { type, size, grid, time_of_day, middle_event } = req.query;
 
+  console.log('middle_event', middle_event)
+
   let scriptPath;
   let params = ''
 

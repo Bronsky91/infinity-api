@@ -86,7 +86,7 @@ app.post('/sendmap', (req, res) => {
 
   if (email) {
     saveEmail(email)
-    sendMail(email, dungeonOutputDir + filename);
+    sendMail(email, outputDir + filename);
     res.status(200).send({ message: "Email sent successfully!" });
   } else {
     res.status(400).send({ error: "Email is required" });

@@ -6,6 +6,22 @@
     $(".generateBtn").on("click", function (e) {
       e.preventDefault();
 
+      var queryParams = {};
+      var type = $('#type-data').text();
+      var size = $('#size-data').text();
+      var grid = $('#grid-data').text();
+
+      // Add parameters to the queryParams object if they are not empty
+      if (type) {
+        queryParams.type = type
+      }
+      if (size) {
+        queryParams.size = size
+      }
+      if (grid) {
+        queryParams.grid = grid
+      }
+
       $('.map-complete').hide();
 
       // Hide Preview
@@ -14,8 +30,15 @@
       // Show loading indicator
       $(".map-loading").show();
 
+      var url = infinity_vars.ajaxurl;
+      if (Object.keys(queryParams).length > 0) {
+        url += '?' + $.param(queryParams);
+      }
+
+      console.log('url', url)
+
       $.ajax({
-        url: infinity_vars.ajaxurl,
+        url,
         type: "POST",
         data: {
           action: "download_file",

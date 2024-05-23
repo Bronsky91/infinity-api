@@ -55,9 +55,27 @@ function download_file_from_api() {
     // Verify nonce for security
     check_ajax_referer('security_nonce', 'security');
 
+    // Retrieve query parameters from GET request
+    $params = array();
+    if (isset($_GET['type'])) {
+        $params['type'] = sanitize_text_field($_GET['type']);
+    }
+    if (isset($_GET['size'])) {
+        $params['size'] = sanitize_text_field($_GET['size']);
+    }
+    if (isset($_GET['grid'])) {
+        $params['grid'] = sanitize_text_field($_GET['grid']);
+    }
+
+    // Construct the URL with query parameters if any exist
+    $url = $api_url . '/download';
+    if (!empty($params)) {
+        $url .= '?' . http_build_query($params);
+    }
+
     // Initialize cURL session
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url . '/download');
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, true);
 

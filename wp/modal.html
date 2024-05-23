@@ -128,14 +128,22 @@
             sendBtn.on('click', function () {
                 var email = emailInput.val()
                 var filename = filenameHolder.text()
-                console.log('filename', filename)
-                console.log('email', email)
-                console.log('validated', validateEmail(email))
+
                 if (validateEmail(email)) {
                     modal.removeClass('show');
                     emailErrorMsg.hide()
                     emailInput.val('')
-                    filenameHolder.text('')
+
+                    // Clear state
+                    $('.state').each(function () {
+                        $(this).text('');
+                    });
+
+                    // Clear accordian button state
+                    $('.filter-button').each(function () {
+                        $(this).removeClass('active');
+                    });
+
 
                     $.ajax({
                         url: infinity_vars.ajaxurl,

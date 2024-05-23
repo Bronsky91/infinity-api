@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filter Buttons</title>
     <style>
         .filter-button {
             padding: 5px 5px;
@@ -25,32 +19,13 @@
 
 <body>
 
-    <button class="filter-button" id="dungeonButton">Dungeon</button>
-    <button class="filter-button" id="templeButton">Roads</button>
-    <button class="filter-button" id="caveButton">Tavern</button>
-    <script>
-        const buttons = document.querySelectorAll('.filter-button');
-
-        buttons.forEach(button => {
-            button.addEventListener('click', function () {
-                buttons.forEach(btn => btn.classList.remove('active')); // Remove 'active' class from all buttons
-                this.classList.add('active'); // Add 'active' class to the clicked button
-            });
-        });
-    </script>
-
+    <button class="filter-button type-filter-button" value="dungeon">Dungeon</button>
+    <button class="filter-button type-filter-button" value="road">Roads</button>
+    <button class="filter-button type-filter-button" value="tavern">Tavern</button>
 </body>
 
-</html>
-
-
-<!DOCTYPE html>
-<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filter Buttons</title>
     <style>
         .filter-button {
             padding: 5px 5px;
@@ -71,24 +46,60 @@
 
 <body>
 
-    <button class="filter-button" id="dungeonButton">Classic</button>
-    <button class="filter-button" id="archiveButton">Archive</button>
-    <button class="filter-button" id="templeButton">Temple</button>
-    <button class="filter-button" id="caveButton">Cave</button>
-    <button class="filter-button" id="caveButton">Shrine</button>
-    <button class="filter-button" id="caveButton">Crypt</button>
-
-    <script>
-        const buttons = document.querySelectorAll('.filter-button');
-
-        buttons.forEach(button => {
-            button.addEventListener('click', function () {
-                buttons.forEach(btn => btn.classList.remove('active')); // Remove 'active' class from all buttons
-                this.classList.add('active'); // Add 'active' class to the clicked button
-            });
-        });
-    </script>
+    <button class="filter-button size-filter-button" value="3">Small</button>
+    <button class="filter-button size-filter-button" value="5">Medium</button>
+    <button class="filter-button size-filter-button" value="7">Large</button>
 
 </body>
 
-</html>
+
+
+
+
+<head>
+    <style>
+        .filter-button {
+            padding: 5px 5px;
+            font-size: 12px;
+            border: none;
+            background-color: #ee6c4d;
+            color: white;
+            cursor: pointer;
+            outline: none;
+            margin: 5px;
+        }
+
+        .filter-button.active {
+            background-color: #943b26;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="filter-button grid-filter-button" value="none">None</button>
+    <button class="filter-button grid-filter-button" value="dotted_dark">Dotted</button>
+    <button class="filter-button grid-filter-button" value="thick_dark">Thick</button>
+    <button class="filter-button grid-filter-button" value="thin_dark">Thin</button>
+</body>
+
+
+<script>
+    const buttonGroups = [
+        { selector: '.type-filter-button', stateVar: 'selectedType', dataId: 'type-data', },
+        { selector: '.size-filter-button', stateVar: 'selectedSize', dataId: 'size-data', },
+        { selector: '.grid-filter-button', stateVar: 'selectedGrid', dataId: 'grid-data', }
+    ];
+
+    buttonGroups.forEach(group => {
+        const buttons = document.querySelectorAll(group.selector);
+        const dataElement = document.getElementById(group.dataId);
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                dataElement.textContent = this.value;
+                console.log(this.value)
+            });
+        });
+    });
+</script>

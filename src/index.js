@@ -146,6 +146,8 @@ app.get("/download", async (req, res) => {
 
   const options = { cwd: path.dirname(scriptPath) };
 
+  console.log('running', `${pythonInterpreter} ${scriptPath} ${params}`)
+
   // Run the Python script as a child process
   exec(`${pythonInterpreter} ${scriptPath} ${params}`, options, (error, stdout, stderr) => {
     if (error) {

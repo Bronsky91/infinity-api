@@ -7,6 +7,8 @@ const cors = require("cors");
 const mongoose = require('mongoose');
 const { exec } = require('child_process');
 const fs = require('fs');
+const moment = require('moment-timezone');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -40,12 +42,12 @@ const emailSchema = new mongoose.Schema({
     required: true
   }, modifiedDate: {
     type: Date,
-    default: Date.now
+    default: () => moment().tz('America/Phoenix').toDate()
   }
 });
 
 emailSchema.pre('save', function (next) {
-  this.modifiedDate = Date.now();
+  this.modifiedDate = () => moment().tz('America/Phoenix').toDate();
   next();
 });
 

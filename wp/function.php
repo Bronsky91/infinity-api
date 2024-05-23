@@ -47,7 +47,7 @@ function enqueue_custom_scripts() {
 }
 
 
-$api_url = 'https://d0ff-184-98-10-147.ngrok-free.app';
+$api_url = 'https://infinity.arcanecollector.com';
 
 function download_file_from_api() {
     global $api_url;

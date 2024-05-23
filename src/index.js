@@ -116,7 +116,7 @@ app.get("/download", async (req, res) => {
   let scriptPath;
   let params = ''
 
-  if (grid) {
+  if (grid && grid !== 'none') {
     params += ` --grid_type ${grid}`;
   }
 

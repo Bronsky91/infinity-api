@@ -11,6 +11,7 @@
       var size = $('#size-data').text();
       var grid = $('#grid-data').text();
       var time_of_day = $('#tavern-time-data').text()
+      var season = $('#tavern-season-data').text()
       var middle_event = $('#middle-event-data').text()
 
       // Add parameters to the queryParams object if they are not empty
@@ -28,6 +29,9 @@
       }
       if (middle_event) {
         queryParams.middle_event = middle_event
+      }
+      if (season) {
+        queryParams.season = season
       }
 
       $('.map-complete').hide();

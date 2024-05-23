@@ -111,7 +111,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const { type, size, grid, time_of_day, middle_event } = req.query;
+  const { type, size, grid, time_of_day, season, middle_event } = req.query;
 
   console.log('middle_event', middle_event)
 
@@ -127,6 +127,9 @@ app.get("/download", async (req, res) => {
       scriptPath = tavernScriptPath;
       if (time_of_day) {
         params += ` --time_of_day ${time_of_day}`
+      }
+      if (season) {
+        params += ` --season ${season}`
       }
       break;
     case 'road':

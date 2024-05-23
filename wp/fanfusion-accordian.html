@@ -50,6 +50,13 @@
     <button class="filter-button tavern-time-filter-button" value="night">Night</button>
 </body>
 
+<!-- tavern-season-accordian -->
+
+<body>
+    <button class="filter-button tavern-season-filter-button" value="spring">Spring</button>
+    <button class="filter-button tavern-season-filter-button" value="fall">Fall</button>
+</body>
+
 <!-- road-event-accordian -->
 
 <body>
@@ -71,12 +78,14 @@
         { selector: '.size-filter-button', dataId: 'size-data', },
         { selector: '.grid-filter-button', dataId: 'grid-data', },
         { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', },
+        { selector: '.tavern-season-filter-button', dataId: 'tavern-season-data', },
         { selector: '.road-event-filter-button', dataId: 'middle-event-data' }
 
     ];
 
     const sizeAccordion = document.querySelector('.size-accordian');
     const tavernTimeAccordion = document.querySelector('.tavern-time-accordian');
+    const tavernSeasonAccordion = document.querySelector('.tavern-season-accordian')
     const roadEventAccordion = document.querySelector('.road-event-accordian')
 
     buttonGroups.forEach(group => {
@@ -94,9 +103,11 @@
                     if (this.value === 'tavern') {
                         sizeAccordion.classList.add('hide-accordian');
                         tavernTimeAccordion.classList.remove('hide-accordian');
+                        tavernSeasonAccordion.classList.remove('hide-accordian')
                     } else if (this.value !== 'tavern') {
                         sizeAccordion.classList.remove('hide-accordian');
                         tavernTimeAccordion.classList.add('hide-accordian');
+                        tavernSeasonAccordion.classList.add('hide-accordian')
                     }
 
                     if (this.value === 'road') {
@@ -120,4 +131,5 @@
 <div id="size-data" class="state" style="display: none;"></div>
 <div id="grid-data" class="state" style="display: none;"></div>
 <div id="tavern-time-data" class="state" style="display: none;"></div>
+<div id="tavern-season-data" class="state" style="display: none;"></div>
 <div id="middle-event-data" class="state" style="display: none;"></div>

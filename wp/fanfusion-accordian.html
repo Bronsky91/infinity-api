@@ -1,21 +1,19 @@
-<head>
-    <style>
-        .filter-button {
-            padding: 5px 5px;
-            font-size: 12px;
-            border: none;
-            background-color: #ee6c4d;
-            color: white;
-            cursor: pointer;
-            outline: none;
-            margin: 5px;
-        }
+<style>
+    .filter-button {
+        padding: 5px 5px;
+        font-size: 12px;
+        border: none;
+        background-color: #ee6c4d;
+        color: white;
+        cursor: pointer;
+        outline: none;
+        margin: 5px;
+    }
 
-        .filter-button.active {
-            background-color: #943b26;
-        }
-    </style>
-</head>
+    .filter-button.active {
+        background-color: #943b26;
+    }
+</style>
 
 <body>
 
@@ -27,25 +25,6 @@
 
 <!-- size-accordian -->
 
-<head>
-    <style>
-        .filter-button {
-            padding: 5px 5px;
-            font-size: 12px;
-            border: none;
-            background-color: #ee6c4d;
-            color: white;
-            cursor: pointer;
-            outline: none;
-            margin: 5px;
-        }
-
-        .filter-button.active {
-            background-color: #943b26;
-        }
-    </style>
-</head>
-
 <body>
 
     <button class="filter-button size-filter-button" value="3">Small</button>
@@ -55,27 +34,6 @@
 </body>
 
 
-
-
-
-<head>
-    <style>
-        .filter-button {
-            padding: 5px 5px;
-            font-size: 12px;
-            border: none;
-            background-color: #ee6c4d;
-            color: white;
-            cursor: pointer;
-            outline: none;
-            margin: 5px;
-        }
-
-        .filter-button.active {
-            background-color: #943b26;
-        }
-    </style>
-</head>
 
 <body>
     <button class="filter-button grid-filter-button" value="none">None</button>
@@ -87,28 +45,16 @@
 
 <!-- tavern-time-accordian -->
 
-<head>
-    <style>
-        .filter-button {
-            padding: 5px 5px;
-            font-size: 12px;
-            border: none;
-            background-color: #ee6c4d;
-            color: white;
-            cursor: pointer;
-            outline: none;
-            margin: 5px;
-        }
-
-        .filter-button.active {
-            background-color: #943b26;
-        }
-    </style>
-</head>
-
 <body>
     <button class="filter-button tavern-time-filter-button" value="day">Day</button>
     <button class="filter-button tavern-time-filter-button" value="night">Night</button>
+</body>
+
+<!-- road-event-accordian -->
+
+<body>
+    <button class="filter-button road-event-filter-button" value="true">Yes</button>
+    <button class="filter-button road-event-filter-button" value="false">No</button>
 </body>
 
 
@@ -124,13 +70,14 @@
         { selector: '.type-filter-button', dataId: 'type-data', },
         { selector: '.size-filter-button', dataId: 'size-data', },
         { selector: '.grid-filter-button', dataId: 'grid-data', },
-        { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', }
+        { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', },
+        { selector: '.road-event-filter-button', dataId: 'middle-event-data' }
 
     ];
 
     const sizeAccordion = document.querySelector('.size-accordian');
     const tavernTimeAccordion = document.querySelector('.tavern-time-accordian');
-
+    const roadEventAccordion = document.querySelector('.road-event-accordian')
 
     buttonGroups.forEach(group => {
         const buttons = document.querySelectorAll(group.selector);
@@ -142,15 +89,20 @@
                 buttons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
                 dataElement.textContent = this.value;
-                console.log(this.value)
 
                 if (group.selector === '.type-filter-button') {
                     if (this.value === 'tavern') {
                         sizeAccordion.classList.add('hide-accordian');
                         tavernTimeAccordion.classList.remove('hide-accordian');
-                    } else {
+                    } else if (this.value !== 'tavern') {
                         sizeAccordion.classList.remove('hide-accordian');
                         tavernTimeAccordion.classList.add('hide-accordian');
+                    }
+
+                    if (this.value === 'road') {
+                        roadEventAccordion.classList.remove('hide-accordian');
+                    } else if (this.value !== 'road') {
+                        roadEventAccordion.classList.add('hide-accordian');
                     }
                 }
             });
@@ -168,3 +120,4 @@
 <div id="size-data" class="state" style="display: none;"></div>
 <div id="grid-data" class="state" style="display: none;"></div>
 <div id="tavern-time-data" class="state" style="display: none;"></div>
+<div id="middle-event-data" class="state" style="display: none;"></div>

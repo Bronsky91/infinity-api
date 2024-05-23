@@ -111,7 +111,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const { type, size, grid, time_of_day } = req.query;
+  const { type, size, grid, time_of_day, middle_event } = req.query;
 
   let scriptPath;
   let params = ''
@@ -132,6 +132,9 @@ app.get("/download", async (req, res) => {
       if (size) {
         params += ` --length ${size}`;
       }
+      if (middle_event) {
+        params += ` --middle_event`
+      }
       break;
     default:
       scriptPath = dungeonScriptPath;
@@ -143,7 +146,6 @@ app.get("/download", async (req, res) => {
 
   const options = { cwd: path.dirname(scriptPath) };
 
-  console.log('running', `${pythonInterpreter} ${scriptPath} ${params}`)
   // Run the Python script as a child process
   exec(`${pythonInterpreter} ${scriptPath} ${params}`, options, (error, stdout, stderr) => {
     if (error) {

@@ -69,6 +69,9 @@ function download_file_from_api() {
     if (isset($_GET['time_of_day'])) {
         $params['time_of_day'] = sanitize_text_field($_GET['time_of_day']);
     }
+    if (isset($_GET['middle_event'])) {
+        $params['middle_event'] = sanitize_text_field($_GET['middle_event']);
+    }
 
     // Construct the URL with query parameters if any exist
     $url = $api_url . '/download';

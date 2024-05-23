@@ -134,7 +134,7 @@ app.get("/download", async (req, res) => {
       if (size) {
         params += ` --length ${size}`;
       }
-      if (middle_event && Boolean(middle_event)) {
+      if (middle_event === 'true') {
         params += ` --middle_event`
       }
       break;

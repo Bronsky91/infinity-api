@@ -136,6 +136,8 @@ app.get("/download", async (req, res) => {
     // stdout should contain the path to the generated file
     const generatedFilePath = outputDir + filename;
 
+    console.log("generatedFilePath", generatedFilePath)
+
     // Check if the file exists
     if (fs.existsSync(generatedFilePath)) {
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
@@ -144,8 +146,8 @@ app.get("/download", async (req, res) => {
       // Send the file to the client
       res.download(generatedFilePath, filename, (err) => {
         if (err) {
-          console.error("Error occurred while downloading the file:", err);
-          return res.status(500).send("Error occurred while downloading the file");
+          console.error("Error occurred while sending the file:", err);
+          return res.status(500).send("Error occurred while sending the file");
         }
 
         // Schedule file deletion after 5 minutes

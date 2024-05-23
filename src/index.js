@@ -7,7 +7,6 @@ const cors = require("cors");
 const mongoose = require('mongoose');
 const { exec } = require('child_process');
 const fs = require('fs');
-const moment = require('moment-timezone');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -36,18 +35,25 @@ const tavernScriptPath = path.join(__dirname, `../../Mythical_Maps/tavern/rd_tav
 
 const outputDir = path.join(__dirname, `../../Mythical_Maps/finished/`);
 
+const azDateTime = () => {
+  const now = new Date();
+  const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+  const arizonaTime = new Date(utcNow.getTime() - 7 * 60 * 60000); // UTC-7 for Arizona time
+  return arizonaTime;
+}
+
 const emailSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true
   }, signupDatetime: {
     type: Date,
-    default: () => moment().tz('America/Phoenix').toDate()
+    default: () => azDateTime()
   }
 });
 
 emailSchema.pre('save', function (next) {
-  this.signupDatetime = () => moment().tz('America/Phoenix').toDate();
+  this.signupDatetime = () => azDateTime();
   next();
 });
 

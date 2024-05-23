@@ -40,14 +40,14 @@ const emailSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true
-  }, modifiedDate: {
+  }, signupDatetime: {
     type: Date,
     default: () => moment().tz('America/Phoenix').toDate()
   }
 });
 
 emailSchema.pre('save', function (next) {
-  this.modifiedDate = () => moment().tz('America/Phoenix').toDate();
+  this.signupDatetime = () => moment().tz('America/Phoenix').toDate();
   next();
 });
 

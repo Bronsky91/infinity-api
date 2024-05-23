@@ -136,8 +136,6 @@ app.get("/download", async (req, res) => {
     // stdout should contain the path to the generated file
     const generatedFilePath = outputDir + filename;
 
-    console.log("generatedFilePath", generatedFilePath)
-
     // Check if the file exists
     if (fs.existsSync(generatedFilePath)) {
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);

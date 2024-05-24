@@ -1,0 +1,141 @@
+<style>
+    .filter-button {
+        padding: 5px 5px;
+        font-size: 12px;
+        border: none;
+        background-color: #ee6c4d;
+        color: white;
+        cursor: pointer;
+        outline: none;
+        margin: 5px;
+    }
+
+    .filter-button.active {
+        background-color: #943b26;
+    }
+</style>
+
+<body>
+    <button class="filter-button type-filter-button" value="dungeon">Dungeon</button>
+    <button class="filter-button type-filter-button" value="road">Roads</button>
+    <button class="filter-button type-filter-button" value="tavern">Tavern</button>
+</body>
+
+
+
+<!-- size-accordian -->
+
+<body>
+
+    <button class="filter-button size-filter-button" value="3">Small</button>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button size-filter-button" value="5" disabled>Medium</button>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button size-filter-button" value="7" disabled>Large</button>
+</body>
+
+<!-- grid-accordian -->
+
+<body>
+    <button class="filter-button grid-filter-button" value="none">None</button>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button grid-filter-button" value="dotted_dark" disabled>Dotted</button>
+    <button class="filter-button grid-filter-button" value="thick_dark">Thick</button>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button grid-filter-button" value="thin_dark" disabled>Thin</button>
+</body>
+
+
+<!-- tavern-time-accordian -->
+
+<body>
+    <button class="filter-button tavern-time-filter-button" value="day">Day</button>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button tavern-time-filter-button" value="night" disabled>Night</button>
+</body>
+
+<!-- tavern-season-accordian -->
+
+<body>
+    <button class="filter-button tavern-season-filter-button" value="spring">Spring</button>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button tavern-season-filter-button" value="fall" disabled>Fall</button>
+</body>
+
+<!-- road-event-accordian -->
+
+<body>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button road-event-filter-button" value="true" disabled>Yes</button>
+    <button class="filter-button road-event-filter-button" value="false">No</button>
+</body>
+
+
+<!-- Options Control -->
+<style>
+    .hide-accordian {
+        display: none;
+    }
+</style>
+
+<script>
+    const buttonGroups = [
+        { selector: '.type-filter-button', dataId: 'type-data', },
+        { selector: '.size-filter-button', dataId: 'size-data', },
+        { selector: '.grid-filter-button', dataId: 'grid-data', },
+        { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', },
+        { selector: '.tavern-season-filter-button', dataId: 'tavern-season-data', },
+        { selector: '.road-event-filter-button', dataId: 'middle-event-data' }
+
+    ];
+
+    const sizeAccordion = document.querySelector('.size-accordian');
+    const tavernTimeAccordion = document.querySelector('.tavern-time-accordian');
+    const tavernSeasonAccordion = document.querySelector('.tavern-season-accordian')
+    const roadEventAccordion = document.querySelector('.road-event-accordian')
+
+    buttonGroups.forEach(group => {
+        const buttons = document.querySelectorAll(group.selector);
+        const dataElement = document.getElementById(group.dataId);
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+
+                buttons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                dataElement.textContent = this.value;
+
+                if (group.selector === '.type-filter-button') {
+                    if (this.value === 'tavern') {
+                        sizeAccordion.classList.add('hide-accordian');
+                        tavernTimeAccordion.classList.remove('hide-accordian');
+                        tavernSeasonAccordion.classList.remove('hide-accordian')
+                    } else if (this.value !== 'tavern') {
+                        sizeAccordion.classList.remove('hide-accordian');
+                        tavernTimeAccordion.classList.add('hide-accordian');
+                        tavernSeasonAccordion.classList.add('hide-accordian')
+                    }
+
+                    if (this.value === 'road') {
+                        roadEventAccordion.classList.remove('hide-accordian');
+                    } else if (this.value !== 'road') {
+                        roadEventAccordion.classList.add('hide-accordian');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+<!-- STATE -->
+<div id="current-file-name" class="state" style="display: none;"></div>
+
+<div id="type-data" class="state" style="display: none;"></div>
+<div id="size-data" class="state" style="display: none;"></div>
+<div id="grid-data" class="state" style="display: none;"></div>
+<div id="tavern-time-data" class="state" style="display: none;"></div>
+<div id="tavern-season-data" class="state" style="display: none;"></div>
+<div id="middle-event-data" class="state" style="display: none;"></div>

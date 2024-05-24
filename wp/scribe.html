@@ -1,0 +1,105 @@
+<script>
+    jQuery(document).ready(function ($) {
+        $(".map-loading").hide();
+        $('.map-complete').hide();
+
+        $(".generateBtn").on("click", function (e) {
+            e.preventDefault();
+
+            var queryParams = {};
+            var type = $('#type-data').text();
+            var size = $('#size-data').text();
+            var grid = $('#grid-data').text();
+            var time_of_day = $('#tavern-time-data').text()
+            var season = $('#tavern-season-data').text()
+            var middle_event = $('#middle-event-data').text()
+
+            // Add parameters to the queryParams object if they are not empty
+            if (type) {
+                queryParams.type = type
+            }
+            if (size) {
+                queryParams.size = size
+            }
+            if (grid) {
+                queryParams.grid = grid
+            }
+            if (time_of_day) {
+                queryParams.time_of_day = time_of_day
+            }
+            if (middle_event) {
+                queryParams.middle_event = middle_event
+            }
+            if (season) {
+                queryParams.season = season
+            }
+
+            $('.map-complete').hide();
+
+            // Hide Preview
+            $(".map-preview").hide()
+
+            // Show loading indicator
+            $(".map-loading").show();
+
+            var url = infinity_vars.ajaxurl;
+            if (Object.keys(queryParams).length > 0) {
+                url += '?' + $.param(queryParams);
+            }
+
+            console.log('url', url)
+
+            $.ajax({
+                url,
+                type: "POST",
+                data: {
+                    action: "download_file",
+                    security: infinity_vars.security,
+                },
+                success: function (response, status, xhr) {
+                    console.log("response", response);
+                    var filename = xhr.getResponseHeader('Filename')
+                    $("#current-file-name").text(filename)
+
+                    // Create a blob from the response
+                    var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
+                    var url = URL.createObjectURL(blob);
+
+                    // hide loading indicator
+                    $(".map-loading").hide();
+
+                    // Display the image
+                    $("#generatedMap").attr("src", url)
+
+                    // Link img to Download button
+                    $(".downloadMapBtn").attr("href", url).attr("download", filename)
+
+                    $('.map-complete').show();
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                    alert("An error occurred.");
+                },
+                xhrFields: {
+                    responseType: "blob", // Important to handle binary data correctly
+                },
+            });
+        });
+
+        $(".downloadMapBtn").on('click', function (e) {
+            $('.map-complete').hide();
+            $(".map-preview").show();
+
+            // Clear state
+            $('.state').each(function () {
+                $(this).text('');
+            });
+
+            // Clear accordian button state
+            $('.filter-button').each(function () {
+                $(this).removeClass('active');
+            });
+
+        })
+    });
+</script>

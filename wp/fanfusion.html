@@ -71,6 +71,9 @@
           // Display the image
           $("#generatedMap").attr("src", url)
 
+          // Link img to Download button
+          $(".downloadMapBtn").attr("href", url).attr("download", filename)
+
           $('.map-complete').show();
         },
         error: function (xhr, status, error) {
@@ -81,6 +84,23 @@
           responseType: "blob", // Important to handle binary data correctly
         },
       });
+
+      // $(".downloadMapBtn").on('click', function (e) {
+      //   $('.map-complete').hide();
+      //   $(".map-preview").show();
+
+      //   // Clear state
+      //   $('.state').each(function () {
+      //     $(this).text('');
+      //   });
+
+      //   // Clear accordian button state
+      //   $('.filter-button').each(function () {
+      //     $(this).removeClass('active');
+      //   });
+
+      // })
+
     });
   });
 </script>

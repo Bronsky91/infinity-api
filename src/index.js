@@ -19,6 +19,8 @@ const MONGO_CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static('public'));
+
 mongoose.connect(MONGO_CONNECTION_STRING).then(() => {
   console.log('Connected to MongoDB');
 }).catch((error) => {

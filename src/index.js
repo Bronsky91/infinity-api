@@ -94,7 +94,7 @@ const sendMail = (email, filePath) => {
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.redirect('https://arcanecollector.com')
 });
 
 app.post('/sendmap', (req, res) => {

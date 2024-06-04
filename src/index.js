@@ -145,7 +145,15 @@ app.get("/download", async (req, res) => {
     case 'wilderness':
       scriptPath = wildernessScriptPath;
       if (size) {
-        params += ` --size ${size}`;
+        let wildernessSize;
+        if (size == 3) {
+          wildernessSize = 'small';
+        } else if (size == 5) {
+          wildernessSize = 'medium';
+        } else if (size == 7) {
+          wildernessSize = 'large';
+        }
+        params += ` --size ${wildernessSize}`;
       }
       if (center) {
         params += ` --center ${center}`

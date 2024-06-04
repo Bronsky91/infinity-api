@@ -34,6 +34,7 @@ const pythonInterpreter = os.platform() === 'win32'
 const dungeonScriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon_args.py`);
 const roadScriptPath = path.join(__dirname, `../../Mythical_Maps/road/rd_road_args.py`);
 const tavernScriptPath = path.join(__dirname, `../../Mythical_Maps/tavern/rd_tavern_args.py`);
+const wildernessScriptPath = path.join(__dirname, `../../Mythical_Maps/wilderness/rd_wilderness_args.py`);
 
 const outputDir = path.join(__dirname, `../../Mythical_Maps/finished/`);
 
@@ -113,9 +114,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const { type, size, grid, time_of_day, season, middle_event } = req.query;
-
-  console.log('middle_event', middle_event)
+  const { type, size, grid, time_of_day, season, middle_event, center } = req.query;
 
   let scriptPath;
   let params = ''
@@ -141,6 +140,15 @@ app.get("/download", async (req, res) => {
       }
       if (middle_event === 'true') {
         params += ` --middle_event`
+      }
+      break;
+    case 'wilderness':
+      scriptPath = wildernessScriptPath;
+      if (size) {
+        params += ` --size ${size}`;
+      }
+      if (center) {
+        params += ` --center ${center}`
       }
       break;
     default:

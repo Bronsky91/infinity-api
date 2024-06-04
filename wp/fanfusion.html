@@ -13,6 +13,7 @@
       var time_of_day = $('#tavern-time-data').text()
       var season = $('#tavern-season-data').text()
       var middle_event = $('#middle-event-data').text()
+      var center = $('#center-dungeon-data').text()
 
       // Add parameters to the queryParams object if they are not empty
       if (type) {
@@ -33,6 +34,9 @@
       if (season) {
         queryParams.season = season
       }
+      if (center) {
+        queryParams.center = center
+      }
 
       $('.map-complete').hide();
 
@@ -46,8 +50,6 @@
       if (Object.keys(queryParams).length > 0) {
         url += '?' + $.param(queryParams);
       }
-
-      console.log('url', url)
 
       $.ajax({
         url,

@@ -75,6 +75,9 @@ function download_file_from_api() {
     if (isset($_GET['middle_event'])) {
         $params['middle_event'] = sanitize_text_field($_GET['middle_event']);
     }
+    if (isset($_GET['center'])) {
+        $params['center'] = sanitize_text_field($_GET['center']);
+    }
 
     // Construct the URL with query parameters if any exist
     $url = $api_url . '/download';

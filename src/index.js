@@ -116,6 +116,8 @@ app.post('/sendmap', (req, res) => {
 app.get("/download", async (req, res) => {
   const { type, size, grid, time_of_day, season, middle_event, center } = req.query;
 
+  console.log('center', center)
+
   let scriptPath;
   let params = ''
 
@@ -160,6 +162,9 @@ app.get("/download", async (req, res) => {
   }
 
   const options = { cwd: path.dirname(scriptPath) };
+
+
+  console.log('RUNNING', `${pythonInterpreter} ${scriptPath} ${params}`)
 
   // Run the Python script as a child process
   exec(`${pythonInterpreter} ${scriptPath} ${params}`, options, (error, stdout, stderr) => {

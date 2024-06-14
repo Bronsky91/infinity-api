@@ -9,10 +9,6 @@
         outline: none;
         margin: 5px;
     }
-
-    .filter-button.active {
-        background-color: #943b26;
-    }
 </style>
 
 <body>
@@ -65,10 +61,21 @@
 </body>
 
 
+<!-- road-to-tavern-accordian -->
+
+<body>
+    <button class="filter-button road-to-tavern-filter-button" value="true">Yes</button>
+    <button class="filter-button road-to-tavern-filter-button" value="false">No</button>
+</body>
+
 <!-- Options Control -->
 <style>
     .hide-accordian {
         display: none;
+    }
+
+    .filter-button.active {
+        background-color: #943b26;
     }
 </style>
 
@@ -79,7 +86,8 @@
         { selector: '.grid-filter-button', dataId: 'grid-data', },
         { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', },
         { selector: '.tavern-season-filter-button', dataId: 'tavern-season-data', },
-        { selector: '.road-event-filter-button', dataId: 'middle-event-data' }
+        { selector: '.road-event-filter-button', dataId: 'middle-event-data' },
+        { selector: '.road-to-tavern-filter-button', dataId: 'road-to-tavern-data' }
 
     ];
 
@@ -87,6 +95,7 @@
     const tavernTimeAccordion = document.querySelector('.tavern-time-accordian');
     const tavernSeasonAccordion = document.querySelector('.tavern-season-accordian')
     const roadEventAccordion = document.querySelector('.road-event-accordian')
+    const roadToTavernAccordion = document.querySelector('.road-to-tavern-accordian')
 
     buttonGroups.forEach(group => {
         const buttons = document.querySelectorAll(group.selector);
@@ -112,8 +121,10 @@
 
                     if (this.value === 'road') {
                         roadEventAccordion.classList.remove('hide-accordian');
+                        roadToTavernAccordion.classList.remove('hide-accordian');
                     } else if (this.value !== 'road') {
                         roadEventAccordion.classList.add('hide-accordian');
+                        roadToTavernAccordion.classList.add('hide-accordian');
                     }
                 }
             });
@@ -133,3 +144,4 @@
 <div id="tavern-time-data" class="state" style="display: none;"></div>
 <div id="tavern-season-data" class="state" style="display: none;"></div>
 <div id="middle-event-data" class="state" style="display: none;"></div>
+<div id="road-to-tavern-data" class="state" style="display: none;"></div>

@@ -14,6 +14,7 @@
       var season = $('#tavern-season-data').text()
       var middle_event = $('#middle-event-data').text()
       var center = $('#center-dungeon-data').text()
+      var road_to_tavern = $('#road-to-tavern-data').text()
 
       // Add parameters to the queryParams object if they are not empty
       if (type) {
@@ -30,6 +31,9 @@
       }
       if (middle_event) {
         queryParams.middle_event = middle_event
+      }
+      if (road_to_tavern) {
+        queryParams.road_to_tavern = road_to_tavern
       }
       if (season) {
         queryParams.season = season

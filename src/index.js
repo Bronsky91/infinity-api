@@ -114,7 +114,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const { type, size, grid, time_of_day, season, middle_event, center } = req.query;
+  const { type, size, grid, time_of_day, season, middle_event, center, road_to_tavern } = req.query;
 
   let scriptPath;
   let params = ''
@@ -140,6 +140,9 @@ app.get("/download", async (req, res) => {
       }
       if (middle_event === 'true') {
         params += ` --middle_event`
+      }
+      if (road_to_tavern === 'true') {
+        params += ` --tavern`
       }
       break;
     case 'wilderness':

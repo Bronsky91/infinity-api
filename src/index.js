@@ -125,8 +125,12 @@ app.get("/download", async (req, res) => {
 
   switch (type) {
     case 'dungeon':
+      scriptPath = dungeonScriptPath;
       if (theme) {
         params += ` --tileTheme ${theme}`;
+      }
+      if (size) {
+        params += ` --tileCount ${size}`;
       }
       break;
     case 'tavern':
@@ -168,6 +172,7 @@ app.get("/download", async (req, res) => {
       }
       break;
     default:
+      // Nothing was enter, default to basic dungeon
       scriptPath = dungeonScriptPath;
       if (size) {
         params += ` --tileCount ${size}`;

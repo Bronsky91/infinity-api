@@ -39,6 +39,14 @@
 </body>
 
 
+<!-- theme-accordian -->
+
+<body>
+    <button class="filter-button theme-filter-button" value="archive">Archive</button>
+    <button class="filter-button theme-filter-button" value="tomb">Tomb</button>
+</body>
+
+
 <!-- tavern-time-accordian -->
 
 <body>
@@ -84,6 +92,7 @@
         { selector: '.type-filter-button', dataId: 'type-data', },
         { selector: '.size-filter-button', dataId: 'size-data', },
         { selector: '.grid-filter-button', dataId: 'grid-data', },
+        { selector: '.theme-filter-button', dataId: 'theme-data', },
         { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', },
         { selector: '.tavern-season-filter-button', dataId: 'tavern-season-data', },
         { selector: '.road-event-filter-button', dataId: 'middle-event-data' },
@@ -92,6 +101,7 @@
     ];
 
     const sizeAccordion = document.querySelector('.size-accordian');
+    const themeAccordion = document.querySelector('.theme-accordian');
     const tavernTimeAccordion = document.querySelector('.tavern-time-accordian');
     const tavernSeasonAccordion = document.querySelector('.tavern-season-accordian')
     const roadEventAccordion = document.querySelector('.road-event-accordian')
@@ -109,6 +119,11 @@
                 dataElement.textContent = this.value;
 
                 if (group.selector === '.type-filter-button') {
+                    if (this.value == 'dungeon') {
+                        themeAccordion.classList.remove('hide-accordian');
+                    } else if (this.value !== 'dungeon') {
+                        themeAccordion.classList.add('hide-accordian');
+                    }
                     if (this.value === 'tavern') {
                         sizeAccordion.classList.add('hide-accordian');
                         tavernTimeAccordion.classList.remove('hide-accordian');
@@ -141,6 +156,7 @@
 <div id="type-data" class="state" style="display: none;"></div>
 <div id="size-data" class="state" style="display: none;"></div>
 <div id="grid-data" class="state" style="display: none;"></div>
+<div id="theme-data" class="state" style="display: none;"></div>
 <div id="tavern-time-data" class="state" style="display: none;"></div>
 <div id="tavern-season-data" class="state" style="display: none;"></div>
 <div id="middle-event-data" class="state" style="display: none;"></div>

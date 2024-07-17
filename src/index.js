@@ -114,7 +114,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const { type, size, grid, time_of_day, season, middle_event, center, road_to_tavern } = req.query;
+  const { type, size, grid, theme, time_of_day, season, middle_event, center, road_to_tavern } = req.query;
 
   let scriptPath;
   let params = ''
@@ -124,6 +124,11 @@ app.get("/download", async (req, res) => {
   }
 
   switch (type) {
+    case 'dungeon':
+      if (theme) {
+        params += ` --tileTheme ${theme}`;
+      }
+      break;
     case 'tavern':
       scriptPath = tavernScriptPath;
       if (time_of_day) {

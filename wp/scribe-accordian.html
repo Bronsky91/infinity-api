@@ -53,6 +53,17 @@
         class="filter-button theme-filter-button" value="tomb" disabled>Tomb</button>
 </body>
 
+<!-- layout-accordian -->
+
+<body>
+    <button class="filter-button layout-filter-button" value="random">Random</button>
+    <button class="filter-button layout-filter-button" value="clustered">Clustered</button>
+    <button class="filter-button layout-filter-button" value="cross">Cross</button>
+    <button class="filter-button layout-filter-button" value="linear">Linear</button>
+    <button class="filter-button layout-filter-button" value="branching">Branching</button>
+    <button class="filter-button layout-filter-button" value="dead_ends">Dead Ends</button>
+</body>
+
 
 <!-- tavern-time-accordian -->
 
@@ -68,6 +79,8 @@
     <button class="filter-button tavern-season-filter-button" value="spring">Spring</button>
     <button title="Join Founder tier on Patreon for early access to this feature"
         class="filter-button tavern-season-filter-button" value="fall" disabled>Fall</button>
+    <button title="Join Founder tier on Patreon for early access to this feature"
+        class="filter-button tavern-season-filter-button" value="winter" disabled>Winter</button>
 </body>
 
 <!-- road-event-accordian -->
@@ -108,6 +121,7 @@
         { selector: '.size-filter-button', dataId: 'size-data', },
         { selector: '.grid-filter-button', dataId: 'grid-data', },
         { selector: '.theme-filter-button', dataId: 'theme-data', },
+        { selector: '.layout-filter-button', dataId: 'layout-data', },
         { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', },
         { selector: '.tavern-season-filter-button', dataId: 'tavern-season-data', },
         { selector: '.road-event-filter-button', dataId: 'middle-event-data' },
@@ -117,6 +131,7 @@
 
     const sizeAccordion = document.querySelector('.size-accordian');
     const themeAccordion = document.querySelector('.theme-accordian');
+    const layoutAccordion = document.querySelector('.layout-accordian');
     const tavernTimeAccordion = document.querySelector('.tavern-time-accordian');
     const tavernSeasonAccordion = document.querySelector('.tavern-season-accordian')
     const roadEventAccordion = document.querySelector('.road-event-accordian')
@@ -136,8 +151,10 @@
                 if (group.selector === '.type-filter-button') {
                     if (this.value == 'dungeon') {
                         themeAccordion.classList.remove('hide-accordian');
+                        layoutAccordion.classList.remove('hide-accordian');
                     } else if (this.value !== 'dungeon') {
                         themeAccordion.classList.add('hide-accordian');
+                        layoutAccordion.classList.add('hide-accordian');
                     }
                     if (this.value === 'tavern') {
                         sizeAccordion.classList.add('hide-accordian');
@@ -172,6 +189,7 @@
 <div id="size-data" class="state" style="display: none;"></div>
 <div id="grid-data" class="state" style="display: none;"></div>
 <div id="theme-data" class="state" style="display: none;"></div>
+<div id="layout-data" class="state" style="display: none;"></div>
 <div id="tavern-time-data" class="state" style="display: none;"></div>
 <div id="tavern-season-data" class="state" style="display: none;"></div>
 <div id="middle-event-data" class="state" style="display: none;"></div>

@@ -114,7 +114,7 @@ app.post('/sendmap', (req, res) => {
 
 
 app.get("/download", async (req, res) => {
-  const { type, size, grid, theme, time_of_day, season, middle_event, center, road_to_tavern } = req.query;
+  const { type, size, grid, theme, layout, time_of_day, season, middle_event, center, road_to_tavern } = req.query;
 
   let scriptPath;
   let params = ''
@@ -131,6 +131,9 @@ app.get("/download", async (req, res) => {
       }
       if (size) {
         params += ` --tileCount ${size}`;
+      }
+      if (layout) {
+        params += ` --tileGenInput ${layout}`
       }
       break;
     case 'tavern':

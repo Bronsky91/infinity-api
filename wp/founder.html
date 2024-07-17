@@ -11,6 +11,7 @@
       var size = $('#size-data').text();
       var grid = $('#grid-data').text();
       var theme = $('#theme-data').text();
+      var layout = $('#layout-data').text();
       var time_of_day = $('#tavern-time-data').text()
       var season = $('#tavern-season-data').text()
       var middle_event = $('#middle-event-data').text()
@@ -29,6 +30,9 @@
       }
       if (theme) {
         queryParams.theme = theme
+      }
+      if (layout) {
+        queryParams.layout = layout
       }
       if (time_of_day) {
         queryParams.time_of_day = time_of_day

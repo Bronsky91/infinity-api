@@ -69,6 +69,9 @@ function download_file_from_api() {
     if (isset($_GET['theme'])) {
         $params['theme'] = sanitize_text_field($_GET['theme']);
     }
+    if (isset($_GET['layout'])) {
+        $params['layout'] = sanitize_text_field($_GET['layout']);
+    }   
     if (isset($_GET['time_of_day'])) {
         $params['time_of_day'] = sanitize_text_field($_GET['time_of_day']);
     }

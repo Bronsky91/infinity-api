@@ -1,3 +1,5 @@
+const path = require("path");
+
 const { GENERATOR } = require("./constants");
 
 const dungeonScriptPath = path.join(
@@ -30,14 +32,14 @@ const getWildernessMapSize = (mapSize) => {
   }
 };
 
-export const azDateTime = () => {
+const azDateTime = () => {
   const now = new Date();
   const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
   const arizonaTime = new Date(utcNow.getTime() - 7 * 60 * 60000); // UTC-7 for Arizona time
   return arizonaTime;
 };
 
-export const getScriptPathFromGenerator = (generator) => {
+const getScriptPathFromGenerator = (generator) => {
   switch (generator) {
     case GENERATOR.DUNGEON:
       return dungeonScriptPath;
@@ -52,11 +54,12 @@ export const getScriptPathFromGenerator = (generator) => {
   }
 };
 
-export const getParams = (request) => {
+const getParams = (request) => {
   const {
     generator,
     name,
     visuals,
+    layout,
     gridType,
     time,
     season,
@@ -68,20 +71,6 @@ export const getParams = (request) => {
     dmGuideSettings,
   } = request;
 
-  //   visuals: {
-  //     type: null,
-  //     style: null,
-  //     variation: null,
-  //   },
-  //   seed: {
-  //     show: false,
-  //     value: "",
-  //   },
-  //   dmGuideSettings: {
-  //     show: false,
-  //     partyLevel: 3,
-  //     partySize: 4,
-
   let params = {};
 
   switch (generator) {
@@ -89,17 +78,18 @@ export const getParams = (request) => {
       params = {
         "--tileTheme": visuals?.type,
         "--tileCount": mapSize,
-        // '--tileGenInput': 'random', // * Layout from WP prototype
+        "--tileGenInput": layout,
         "--grid_type": gridType,
+        "--quality": quality,
+        "--user_seed": seed?.show ? seed.value : null,
+        "--dm_map": dmGuideSettings?.show,
+        "--guide_html": dmGuideSettings?.show,
         "--party_members": dmGuideSettings?.show
           ? dmGuideSettings.partySize
           : null,
         "--party_level": dmGuideSettings?.show
           ? dmGuideSettings?.partyLevel
           : null,
-        "--user_seed": seed?.show ? seed.value : null,
-        "--dm_map": dmGuideSettings?.show,
-        "--guide_html": dmGuideSettings?.show,
       };
       break;
 
@@ -153,4 +143,10 @@ export const getParams = (request) => {
     .join(" ");
 
   return paramString;
+};
+
+module.exports = {
+  getParams,
+  getScriptPathFromGenerator,
+  azDateTime,
 };

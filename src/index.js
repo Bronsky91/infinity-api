@@ -23,6 +23,7 @@ const API_KEY = process.env.API_KEY;
 const DOMAIN = process.env.DOMAIN;
 const MONGO_CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING;
 
+// TODO: Update cors to only accept requests from WP site and new React app
 app.use(cors());
 app.use(express.json());
 
@@ -248,6 +249,8 @@ app.get("/generate", async (req, res) => {
 // * Generate Endpoint will create the Map files, and PDF and return the JSON data of DM Guide along with the filenames
 // TODO: Create a refactored /download endpoint that uses the filenames from the /generate endpoint to download the files
 app.post("/generate", (req, res) => {
+  const { generator } = req.body;
+
   const scriptPath = getScriptPathFromGenerator(generator);
   const params = getParams(req.body);
 
@@ -265,7 +268,6 @@ app.post("/generate", (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
 
-      // TODO: Start mocking the actual JSON output here
       const filename = stdout.trim();
 
       // stdout should contain the path to the generated file

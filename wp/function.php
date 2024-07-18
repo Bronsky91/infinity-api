@@ -89,7 +89,7 @@ function download_file_from_api() {
     }
 
     // Construct the URL with query parameters if any exist
-    $url = $api_url . '/download';
+    $url = $api_url . '/generate';
     if (!empty($params)) {
         $url .= '?' . http_build_query($params);
     }

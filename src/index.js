@@ -113,7 +113,6 @@ app.post("/sendmap", (req, res) => {
   }
 });
 
-// TODO: Update endpoint in WP Prototype
 // Wordpress Prototype endpoint
 app.get("/generate", async (req, res) => {
   const {
@@ -205,7 +204,9 @@ app.get("/generate", async (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
 
-      const filename = stdout.trim();
+      const data = JSON.parse(stdout);
+
+      const filename = data.player_filename;
 
       // stdout should contain the path to the generated file
       const generatedFilePath = outputDir + filename;
@@ -268,43 +269,33 @@ app.post("/generate", (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
 
-      const filename = stdout.trim();
+      const data = JSON.parse(stdout);
+      console.log("DATA", data);
 
-      // stdout should contain the path to the generated file
-      const generatedFilePath = outputDir + filename;
-
-      // Check if the file exists
-      if (fs.existsSync(generatedFilePath)) {
-        res.setHeader(
-          "Content-Disposition",
-          `attachment; filename="${filename}"`
-        );
-        res.setHeader("Filename", filename);
-
-        // Send the file to the client
-        res.download(generatedFilePath, filename, (err) => {
-          if (err) {
-            console.error("Error occurred while sending the file:", err);
-            return res
-              .status(500)
-              .send("Error occurred while sending the file");
-          }
-
-          // Schedule file deletion after 5 minutes
-          setTimeout(() => {
-            fs.unlink(generatedFilePath, (err) => {
+      // Schedule file deletion after 5 minutes
+      const deleteFiles = (files) =>
+        files.forEach((file) => {
+          if (file !== "") {
+            fs.unlink(outputDir + file, (err) => {
               if (err) {
                 console.error("Error occurred while deleting the file:", err);
               } else {
-                console.log(`File ${filename} deleted successfully`);
+                console.log(`File ${file} deleted successfully`);
               }
             });
-          }, 5 * 60 * 1000); // 5 minutes in milliseconds
+          }
         });
-      } else {
-        console.error("Generated file not found:", generatedFilePath);
-        res.status(500).send("Generated file not found");
-      }
+      setTimeout(
+        () =>
+          deleteFiles([
+            data.player_filename,
+            data.dm_filename,
+            data.pdf_filename,
+          ]),
+        5 * 60 * 1000 // 5 minutes in milliseconds
+      );
+
+      res.send(data);
     }
   );
 });

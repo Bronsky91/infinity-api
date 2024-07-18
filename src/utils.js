@@ -83,7 +83,7 @@ const getParams = (request) => {
         "--quality": quality,
         "--user_seed": seed?.show ? seed.value : null,
         "--dm_map": dmGuideSettings?.show,
-        "--guide_html": dmGuideSettings?.show,
+        "--dm_guide_flag": dmGuideSettings?.show,
         "--party_members": dmGuideSettings?.show
           ? dmGuideSettings.partySize
           : null,

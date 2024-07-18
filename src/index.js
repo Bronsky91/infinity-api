@@ -206,10 +206,9 @@ app.get("/generate", async (req, res) => {
 
       let filename;
 
-      console.log("TYPE", type);
       if (type === GENERATOR.DUNGEON || !type) {
         const data = JSON.parse(stdout);
-        filename = data.filename;
+        filename = data.player_filename;
       } else {
         filename = stdout.trim();
       }

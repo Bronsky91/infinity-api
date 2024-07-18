@@ -17,6 +17,8 @@ const {
   getScriptPathFromGenerator,
   azDateTime,
   getParams,
+  outputDir,
+  deleteFiles,
 } = require("./utils");
 
 const API_KEY = process.env.API_KEY;
@@ -42,8 +44,6 @@ const pythonInterpreter =
   os.platform() === "win32"
     ? path.join(__dirname, "../../Mythical_Maps/venv/Scripts/python.exe")
     : path.join(__dirname, "../../Mythical_Maps/venv/bin/python");
-
-const outputDir = path.join(__dirname, `../../Mythical_Maps/finished/`);
 
 const emailSchema = new mongoose.Schema({
   email: {
@@ -274,33 +274,32 @@ app.post("/generate", (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
 
-      const data = JSON.parse(stdout);
-      console.log("DATA", data);
+      let mapData;
+      if (generator === GENERATOR.DUNGEON) {
+        mapData = JSON.parse(stdout);
+      } else {
+        mapData = stdout.trim();
+      }
+
+      console.log("mapData", mapData);
 
       // Schedule file deletion after 5 minutes
-      const deleteFiles = (files) =>
-        files.forEach((file) => {
-          if (file !== "") {
-            fs.unlink(outputDir + file, (err) => {
-              if (err) {
-                console.error("Error occurred while deleting the file:", err);
-              } else {
-                console.log(`File ${file} deleted successfully`);
-              }
-            });
-          }
-        });
       setTimeout(
-        () =>
-          deleteFiles([
-            data.player_filename,
-            data.dm_filename,
-            data.pdf_filename,
-          ]),
+        () => {
+          const files =
+            generator === GENERATOR.DUNGEON
+              ? [
+                  mapData.player_filename,
+                  mapData.dm_filename,
+                  mapData.pdf_filename,
+                ]
+              : [mapData];
+          deleteFiles(files);
+        },
         5 * 60 * 1000 // 5 minutes in milliseconds
       );
 
-      res.send(data);
+      res.send(mapData);
     }
   );
 });

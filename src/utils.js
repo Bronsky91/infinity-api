@@ -19,6 +19,8 @@ const wildernessScriptPath = path.join(
   `../../Mythical_Maps/wilderness/rd_wilderness_args.py`
 );
 
+const outputDir = path.join(__dirname, `../../Mythical_Maps/finished/`);
+
 const getWildernessMapSize = (mapSize) => {
   switch (mapSize) {
     case 1:
@@ -38,6 +40,19 @@ const azDateTime = () => {
   const arizonaTime = new Date(utcNow.getTime() - 7 * 60 * 60000); // UTC-7 for Arizona time
   return arizonaTime;
 };
+
+const deleteFiles = (files) =>
+  files.forEach((file) => {
+    if (file !== "") {
+      fs.unlink(outputDir + file, (err) => {
+        if (err) {
+          console.error("Error occurred while deleting the file:", err);
+        } else {
+          console.log(`File ${file} deleted successfully`);
+        }
+      });
+    }
+  });
 
 const getScriptPathFromGenerator = (generator) => {
   switch (generator) {
@@ -149,4 +164,6 @@ module.exports = {
   getParams,
   getScriptPathFromGenerator,
   azDateTime,
+  deleteFiles,
+  outputDir,
 };

@@ -1,66 +1,66 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const os = require('os');
+const os = require("os");
 const cors = require("cors");
-const mongoose = require('mongoose');
-const { exec } = require('child_process');
-const fs = require('fs');
+const mongoose = require("mongoose");
+const mailgun = require("mailgun-js");
+const { exec } = require("child_process");
+const fs = require("fs");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const mailgun = require('mailgun-js');
+const { GENERATOR } = require("./constants");
+const {
+  getScriptPathFromGenerator,
+  azDateTime,
+  getParams,
+} = require("./utils");
+
 const API_KEY = process.env.API_KEY;
 const DOMAIN = process.env.DOMAIN;
-const MONGO_CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING
+const MONGO_CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING;
 
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static('public'));
+app.use(express.static("public"));
 
-mongoose.connect(MONGO_CONNECTION_STRING).then(() => {
-  console.log('Connected to MongoDB');
-}).catch((error) => {
-  console.error('Error connecting to MongoDB:', error);
-});
+mongoose
+  .connect(MONGO_CONNECTION_STRING)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
 
-const pythonInterpreter = os.platform() === 'win32'
-  ? path.join(__dirname, '../../Mythical_Maps/venv/Scripts/python.exe')
-  : path.join(__dirname, '../../Mythical_Maps/venv/bin/python');
-
-const dungeonScriptPath = path.join(__dirname, `../../Mythical_Maps/dungeon/rd_dungeon_args.py`);
-const roadScriptPath = path.join(__dirname, `../../Mythical_Maps/road/rd_road_args.py`);
-const tavernScriptPath = path.join(__dirname, `../../Mythical_Maps/tavern/rd_tavern_args.py`);
-const wildernessScriptPath = path.join(__dirname, `../../Mythical_Maps/wilderness/rd_wilderness_args.py`);
+const pythonInterpreter =
+  os.platform() === "win32"
+    ? path.join(__dirname, "../../Mythical_Maps/venv/Scripts/python.exe")
+    : path.join(__dirname, "../../Mythical_Maps/venv/bin/python");
 
 const outputDir = path.join(__dirname, `../../Mythical_Maps/finished/`);
-
-const azDateTime = () => {
-  const now = new Date();
-  const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-  const arizonaTime = new Date(utcNow.getTime() - 7 * 60 * 60000); // UTC-7 for Arizona time
-  return arizonaTime;
-}
 
 const emailSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true
-  }, signupDatetime: {
+    required: true,
+  },
+  signupDatetime: {
     type: Date,
-    default: () => azDateTime()
-  }
+    default: () => azDateTime(),
+  },
 });
 
-emailSchema.pre('save', function (next) {
+emailSchema.pre("save", function (next) {
   this.signupDatetime = () => azDateTime();
   next();
 });
 
-const Email = mongoose.model('Email', emailSchema);
+const Email = mongoose.model("Email", emailSchema);
 
 const saveEmail = async (email) => {
   try {
@@ -70,62 +70,73 @@ const saveEmail = async (email) => {
       await newEmail.save();
     }
   } catch (error) {
-    console.error('Error saving email to MongoDB:', error);
+    console.error("Error saving email to MongoDB:", error);
     res.status(500).send({ error: "Internal Server Error" });
   }
-}
+};
 
 const sendMail = (email, filePath) => {
   const mg = mailgun({ apiKey: API_KEY, domain: DOMAIN });
 
   const data = {
-    from: 'Arcane Collector <info@infinity.arcanecollector.com>',
+    from: "Arcane Collector <info@infinity.arcanecollector.com>",
     to: email,
-    subject: 'Welcome to Arcane Collector!',
-    template: 'fan fusion generated map',
-    attachment: filePath
+    subject: "Welcome to Arcane Collector!",
+    template: "fan fusion generated map",
+    attachment: filePath,
   };
 
   // Send the email
   mg.messages().send(data, function (error, body) {
     if (error) {
-      console.log('Error:', error);
+      console.log("Error:", error);
     } else {
-      console.log('Email sent:', body);
+      console.log("Email sent:", body);
     }
   });
-}
+};
 
 app.get("/", (req, res) => {
-  res.redirect('https://arcanecollector.com')
+  res.redirect("https://arcanecollector.com");
 });
 
-app.post('/sendmap', (req, res) => {
-  const { email, filename } = req?.body
+app.post("/sendmap", (req, res) => {
+  const { email, filename } = req?.body;
 
   if (email) {
-    saveEmail(email)
+    saveEmail(email);
     sendMail(email, outputDir + filename);
     res.status(200).send({ message: "Email sent successfully!" });
   } else {
     res.status(400).send({ error: "Email is required" });
   }
-})
+});
 
+// TODO: Update endpoint in WP Prototype
+// Wordpress Prototype endpoint
+app.get("/generate", async (req, res) => {
+  const {
+    type,
+    size,
+    grid,
+    theme,
+    layout,
+    time_of_day,
+    season,
+    middle_event,
+    center,
+    road_to_tavern,
+  } = req.query;
 
-app.get("/download", async (req, res) => {
-  const { type, size, grid, theme, layout, time_of_day, season, middle_event, center, road_to_tavern } = req.query;
+  const scriptPath = getScriptPathFromGenerator(type);
+  let params = "";
 
-  let scriptPath;
-  let params = ''
-
-  if (grid && grid !== 'none') {
+  if (grid && grid !== "none") {
     params += ` --grid_type ${grid}`;
   }
 
   switch (type) {
-    case 'dungeon':
-      scriptPath = dungeonScriptPath;
+    case GENERATOR.DUNGEON:
       if (theme) {
         params += ` --tileTheme ${theme}`;
       }
@@ -133,50 +144,46 @@ app.get("/download", async (req, res) => {
         params += ` --tileCount ${size}`;
       }
       if (layout) {
-        params += ` --tileGenInput ${layout}`
+        params += ` --tileGenInput ${layout}`;
       }
       break;
-    case 'tavern':
-      scriptPath = tavernScriptPath;
+    case GENERATOR.TAVERN:
       if (time_of_day) {
-        params += ` --time_of_day ${time_of_day}`
+        params += ` --time_of_day ${time_of_day}`;
       }
       if (season) {
-        params += ` --season ${season}`
+        params += ` --season ${season}`;
       }
       break;
-    case 'road':
-      scriptPath = roadScriptPath;
+    case GENERATOR.ROAD:
       if (size) {
         params += ` --length ${size}`;
       }
-      if (middle_event === 'true') {
-        params += ` --middle_event`
+      if (middle_event === "true") {
+        params += ` --middle_event`;
       }
-      if (road_to_tavern === 'true') {
-        params += ` --tavern`
+      if (road_to_tavern === "true") {
+        params += ` --tavern`;
       }
       break;
-    case 'wilderness':
-      scriptPath = wildernessScriptPath;
+    case GENERATOR.WILDERNESS:
       if (size) {
         let wildernessSize;
         if (size == 3) {
-          wildernessSize = 'small';
+          wildernessSize = "small";
         } else if (size == 5) {
-          wildernessSize = 'medium';
+          wildernessSize = "medium";
         } else if (size == 7) {
-          wildernessSize = 'large';
+          wildernessSize = "large";
         }
         params += ` --size ${wildernessSize}`;
       }
       if (center) {
-        params += ` --center ${center}`
+        params += ` --center ${center}`;
       }
       break;
     default:
       // Nothing was enter, default to basic dungeon
-      scriptPath = dungeonScriptPath;
       if (size) {
         params += ` --tileCount ${size}`;
       }
@@ -188,46 +195,116 @@ app.get("/download", async (req, res) => {
   console.log("RUNNING", `${pythonInterpreter} ${scriptPath} ${params}`);
 
   // Run the Python script as a child process
-  exec(`${pythonInterpreter} ${scriptPath} ${params}`, options, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error executing Python script: ${error.message}`);
-      return res.status(500).send("Error occurred while generating the map");
+  exec(
+    `${pythonInterpreter} ${scriptPath} ${params}`,
+    options,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error executing Python script: ${error.message}`);
+        return res.status(500).send("Error occurred while generating the map");
+      }
+
+      const filename = stdout.trim();
+
+      // stdout should contain the path to the generated file
+      const generatedFilePath = outputDir + filename;
+
+      // Check if the file exists
+      if (fs.existsSync(generatedFilePath)) {
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${filename}"`
+        );
+        res.setHeader("Filename", filename);
+
+        // Send the file to the client
+        res.download(generatedFilePath, filename, (err) => {
+          if (err) {
+            console.error("Error occurred while sending the file:", err);
+            return res
+              .status(500)
+              .send("Error occurred while sending the file");
+          }
+
+          // Schedule file deletion after 5 minutes
+          setTimeout(() => {
+            fs.unlink(generatedFilePath, (err) => {
+              if (err) {
+                console.error("Error occurred while deleting the file:", err);
+              } else {
+                console.log(`File ${filename} deleted successfully`);
+              }
+            });
+          }, 5 * 60 * 1000); // 5 minutes in milliseconds
+        });
+      } else {
+        console.error("Generated file not found:", generatedFilePath);
+        res.status(500).send("Generated file not found");
+      }
     }
+  );
+});
 
-    const filename = stdout.trim();
+// * Generate Endpoint will create the Map files, and PDF and return the JSON data of DM Guide along with the filenames
+// TODO: Create a refactored /download endpoint that uses the filenames from the /generate endpoint to download the files
+app.post("/generate", (req, res) => {
+  const scriptPath = getScriptPathFromGenerator(generator);
+  const params = getParams(req.body);
 
-    // stdout should contain the path to the generated file
-    const generatedFilePath = outputDir + filename;
+  const options = { cwd: path.dirname(scriptPath) };
 
-    // Check if the file exists
-    if (fs.existsSync(generatedFilePath)) {
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-      res.setHeader('Filename', filename);
+  console.log("RUNNING", `${pythonInterpreter} ${scriptPath} ${params}`);
 
-      // Send the file to the client
-      res.download(generatedFilePath, filename, (err) => {
-        if (err) {
-          console.error("Error occurred while sending the file:", err);
-          return res.status(500).send("Error occurred while sending the file");
-        }
+  // Run the Python script as a child process
+  exec(
+    `${pythonInterpreter} ${scriptPath} ${params}`,
+    options,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error executing Python script: ${error.message}`);
+        return res.status(500).send("Error occurred while generating the map");
+      }
 
-        // Schedule file deletion after 5 minutes
-        setTimeout(() => {
-          fs.unlink(generatedFilePath, (err) => {
-            if (err) {
-              console.error("Error occurred while deleting the file:", err);
-            } else {
-              console.log(`File ${filename} deleted successfully`);
-            }
-          });
-        }, 5 * 60 * 1000); // 5 minutes in milliseconds
-      });
+      // TODO: Start mocking the actual JSON output here
+      const filename = stdout.trim();
 
-    } else {
-      console.error("Generated file not found:", generatedFilePath);
-      res.status(500).send("Generated file not found");
+      // stdout should contain the path to the generated file
+      const generatedFilePath = outputDir + filename;
+
+      // Check if the file exists
+      if (fs.existsSync(generatedFilePath)) {
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${filename}"`
+        );
+        res.setHeader("Filename", filename);
+
+        // Send the file to the client
+        res.download(generatedFilePath, filename, (err) => {
+          if (err) {
+            console.error("Error occurred while sending the file:", err);
+            return res
+              .status(500)
+              .send("Error occurred while sending the file");
+          }
+
+          // Schedule file deletion after 5 minutes
+          setTimeout(() => {
+            fs.unlink(generatedFilePath, (err) => {
+              if (err) {
+                console.error("Error occurred while deleting the file:", err);
+              } else {
+                console.log(`File ${filename} deleted successfully`);
+              }
+            });
+          }, 5 * 60 * 1000); // 5 minutes in milliseconds
+        });
+      } else {
+        console.error("Generated file not found:", generatedFilePath);
+        res.status(500).send("Generated file not found");
+      }
     }
-  });
+  );
 });
 
 app.listen(port, () => {

@@ -204,9 +204,14 @@ app.get("/generate", async (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
 
-      const data = JSON.parse(stdout);
+      let filename;
 
-      const filename = data.player_filename;
+      if (type === GENERATOR.DUNGEON) {
+        const data = JSON.parse(stdout);
+        filename = data.filename;
+      } else {
+        filename = stdout.trim();
+      }
 
       // stdout should contain the path to the generated file
       const generatedFilePath = outputDir + filename;

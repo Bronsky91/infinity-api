@@ -304,6 +304,29 @@ app.post("/generate", (req, res) => {
   );
 });
 
+app.get("/download", async (req, res) => {
+  console.log("DOWNLOAD MAP", req.query?.filename);
+  const { filename } = req.query;
+  const generatedFilePath = outputDir + filename;
+
+  // Check if the file exists
+  if (fs.existsSync(generatedFilePath)) {
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Filename", filename);
+
+    // Send the file to the client
+    res.download(generatedFilePath, filename, (err) => {
+      if (err) {
+        console.error("Error occurred while sending the file:", err);
+        return res.status(500).send("Error occurred while sending the file");
+      }
+    });
+  } else {
+    console.error("Generated file not found:", generatedFilePath);
+    res.status(500).send("Generated file not found");
+  }
+});
+
 app.listen(port, () => {
   console.log(`Infinity api listening at http://localhost:${port}`);
 });

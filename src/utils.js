@@ -85,6 +85,7 @@ const getParams = (request) => {
     quality,
     seed,
     dmGuideSettings,
+    difficulty,
   } = request;
 
   let params = {};
@@ -92,6 +93,7 @@ const getParams = (request) => {
   switch (generator) {
     case GENERATOR.DUNGEON:
       params = {
+        "--title": name ? `"${name}"` : null,
         "--tileTheme": visuals?.type,
         "--tileCount": mapSize,
         "--tileGenInput": layout,
@@ -99,18 +101,20 @@ const getParams = (request) => {
         "--quality": quality,
         "--user_seed": seed?.show ? seed.value : null,
         "--dm_map": dmGuideSettings?.show,
-        "--dm_guide_flag": dmGuideSettings?.show,
+        "--dm_guide": dmGuideSettings?.show,
         "--party_members": dmGuideSettings?.show
           ? dmGuideSettings.partySize
           : null,
         "--party_level": dmGuideSettings?.show
           ? dmGuideSettings?.partyLevel
           : null,
+        "--difficulty": difficulty,
       };
       break;
 
     case GENERATOR.ROAD:
       params = {
+        "--title": name ? `"${name}"` : null,
         "--length": mapSize,
         "--tavern": includeTavern,
         "--time_of_day": time,
@@ -118,27 +122,26 @@ const getParams = (request) => {
         "--grid_type": gridType,
         "--middle_event": roadEvent,
         "--quality": quality,
-        "--title": name,
         "--user_seed": seed?.show ? seed.value : null,
       };
       break;
 
     case GENERATOR.TAVERN:
       params = {
+        "--title": name ? `"${name}"` : null,
         "--time_of_day": time,
         "--season": season,
         "--grid_type": gridType,
         "--quality": quality,
-        "--title": name,
         "--user_seed": seed?.show ? seed.value : null,
       };
       break;
 
     case GENERATOR.WILDERNESS:
       params = {
+        "--title": name ? `"${name}"` : null,
         "--grid_type": gridType,
         "--quality": quality,
-        "--title": name,
         "--size": getWildernessMapSize(mapSize),
         "--user_seed": seed?.show ? seed.value : null,
       };
@@ -149,9 +152,9 @@ const getParams = (request) => {
   }
 
   // Remove null, undefined, or false values from params
-  Object.keys(params).forEach((key) =>
-    params[key] == null || params[key] === false ? delete params[key] : {}
-  );
+  Object.keys(params).forEach((key) => {
+    params[key] == null || params[key] === false ? delete params[key] : {};
+  });
 
   // Convert params to string
   const paramString = Object.entries(params)

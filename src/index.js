@@ -30,6 +30,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use(express.static("public"));
+// Hosting the React App
+app.use(express.static(path.join(__dirname, "../public/react-app")));
 
 mongoose
   .connect(MONGO_CONNECTION_STRING)
@@ -97,13 +99,8 @@ const sendMail = (email, filePath) => {
   });
 };
 
-app.get("/", (req, res) => {
-  res.redirect("https://arcanecollector.com");
-});
-
 app.post("/sendmap", (req, res) => {
   const { email, filename } = req?.body;
-
   if (email) {
     saveEmail(email);
     sendMail(email, outputDir + filename);
@@ -305,7 +302,6 @@ app.post("/generate", (req, res) => {
 });
 
 app.get("/download", async (req, res) => {
-  console.log("DOWNLOAD MAP", req.query?.filename);
   const { filename } = req.query;
   const generatedFilePath = outputDir + filename;
 

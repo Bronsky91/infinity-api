@@ -201,6 +201,7 @@ app.get("/generate", async (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
       const mapData = JSON.parse(stdout);
+      console.log("MAP DATA", mapData);
       const filename = mapData.filenames.player;
 
       // stdout should contain the path to the generated file

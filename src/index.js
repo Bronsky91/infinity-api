@@ -119,24 +119,25 @@ const sendMail = (email, filePath) => {
 app.post("/webhook", webhookBodyParser, (req, res) => {
   const payload = req.body;
 
-  console.log("PAYLOAD", payload);
+  console.log("Received Github webhook", payload.repository.name);
 
-  // Verify the webhook payload if necessary
-  // if (payload.ref === 'refs/heads/main') { // or 'refs/heads/master'
-  if (payload.ref === "refs/heads/master") {
+  if (
+    payload.ref === "refs/heads/master" &&
+    payload.repository.name === "infinity-ui"
+  ) {
     // Pull the latest changes from the repository
-    // exec(
-    //   "git pull origin master && yarn install && yarn build",
-    //   { cwd: path.join(__dirname, "../public/react-app") },
-    //   (err, stdout, stderr) => {
-    //     if (err) {
-    //       console.error(`Error: ${stderr}`);
-    //       return res.status(500).send("Deployment failed.");
-    //     }
-    //     console.log(`Output: ${stdout}`);
-    //     res.status(200).send("Deployment successful.");
-    //   }
-    // );
+    exec(
+      "git pull && yarn install && yarn build",
+      { cwd: path.join(__dirname, "../../infinity-ui") },
+      (err, stdout, stderr) => {
+        if (err) {
+          console.error(`Error: ${stderr}`);
+          return res.status(500).send("Deployment failed.");
+        }
+        console.log(`Output: ${stdout}`);
+        res.status(200).send("Deployment successful.");
+      }
+    );
   } else {
     res.status(200).send("No deployment needed.");
   }

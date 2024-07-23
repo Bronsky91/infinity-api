@@ -200,15 +200,8 @@ app.get("/generate", async (req, res) => {
         console.error(`Error executing Python script: ${error.message}`);
         return res.status(500).send("Error occurred while generating the map");
       }
-
-      let filename;
-
-      if (type === GENERATOR.DUNGEON || !type) {
-        const data = JSON.parse(stdout);
-        filename = data.player_filename;
-      } else {
-        filename = stdout.trim();
-      }
+      const mapData = JSON.parse(stdout);
+      const filename = mapData.filenames.player;
 
       // stdout should contain the path to the generated file
       const generatedFilePath = outputDir + filename;
@@ -250,7 +243,6 @@ app.get("/generate", async (req, res) => {
 });
 
 // * Generate Endpoint will create the Map files, and PDF and return the JSON data of DM Guide along with the filenames
-// TODO: Create a refactored /download endpoint that uses the filenames from the /generate endpoint to download the files
 app.post("/generate", (req, res) => {
   const { generator } = req.body;
 
@@ -271,26 +263,12 @@ app.post("/generate", (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
 
-      let mapData;
-      if (generator === GENERATOR.DUNGEON) {
-        mapData = JSON.parse(stdout);
-      } else {
-        mapData = stdout.trim();
-      }
-
-      console.log("mapData", mapData);
+      const mapData = JSON.parse(stdout);
 
       // Schedule file deletion after 5 minutes
       setTimeout(
         () => {
-          const files =
-            generator === GENERATOR.DUNGEON
-              ? [
-                  mapData.player_filename,
-                  mapData.dm_filename,
-                  mapData.pdf_filename,
-                ]
-              : [mapData];
+          const files = [mapData.player, mapData.dm, mapData.pdf];
           deleteFiles(files);
         },
         5 * 60 * 1000 // 5 minutes in milliseconds

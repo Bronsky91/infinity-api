@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const mailgun = require("mailgun-js");
 const { exec } = require("child_process");
 const fs = require("fs");
+const crypto = require("crypto");
+const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,14 +26,29 @@ const {
 const API_KEY = process.env.API_KEY;
 const DOMAIN = process.env.DOMAIN;
 const MONGO_CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING;
+const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 
 // TODO: Update cors to only accept requests from WP site and new React app
 app.use(cors());
 app.use(express.json());
 
+// Middleware to verify the GitHub webhook signature
+const verifySignature = (req, res, buf) => {
+  const secret = GITHUB_WEBHOOK_SECRET;
+  const signature = req.headers["x-hub-signature"] || "";
+  const hmac = crypto.createHmac("sha1", secret);
+  hmac.update(buf, "utf-8");
+  const expectedSignature = `sha1=${hmac.digest("hex")}`;
+
+  if (signature !== expectedSignature) {
+    throw new Error("Invalid signature.");
+  }
+};
+const webhookBodyParser = bodyParser.json({ verify: verifySignature });
+
 app.use(express.static("public"));
 // Hosting the React App
-app.use(express.static(path.join(__dirname, "../public/react-app")));
+app.use(express.static(path.join(__dirname, "../../infinity-ui/build")));
 
 mongoose
   .connect(MONGO_CONNECTION_STRING)
@@ -98,6 +115,32 @@ const sendMail = (email, filePath) => {
     }
   });
 };
+
+app.post("/webhook", webhookBodyParser, (req, res) => {
+  const payload = req.body;
+
+  console.log("PAYLOAD", payload);
+
+  // Verify the webhook payload if necessary
+  // if (payload.ref === 'refs/heads/main') { // or 'refs/heads/master'
+  if (payload.ref === "refs/heads/master") {
+    // Pull the latest changes from the repository
+    // exec(
+    //   "git pull origin master && yarn install && yarn build",
+    //   { cwd: path.join(__dirname, "../public/react-app") },
+    //   (err, stdout, stderr) => {
+    //     if (err) {
+    //       console.error(`Error: ${stderr}`);
+    //       return res.status(500).send("Deployment failed.");
+    //     }
+    //     console.log(`Output: ${stdout}`);
+    //     res.status(200).send("Deployment successful.");
+    //   }
+    // );
+  } else {
+    res.status(200).send("No deployment needed.");
+  }
+});
 
 app.post("/sendmap", (req, res) => {
   const { email, filename } = req?.body;

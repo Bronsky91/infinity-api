@@ -132,13 +132,16 @@ app.post("/webhook", webhookBodyParser, (req, res) => {
       (err, stdout, stderr) => {
         if (err) {
           console.error(`Error: ${stderr}`);
+          console.log("Deployment failed.");
           return res.status(500).send("Deployment failed.");
         }
         console.log(`Output: ${stdout}`);
+        console.log("Deployment successful.");
         res.status(200).send("Deployment successful.");
       }
     );
   } else {
+    console.log("No deployment needed.");
     res.status(200).send("No deployment needed.");
   }
 });

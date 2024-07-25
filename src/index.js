@@ -316,7 +316,11 @@ app.post("/generate", (req, res) => {
       // Schedule file deletion after 5 minutes
       setTimeout(
         () => {
-          const files = [mapData.player, mapData.dm, mapData.pdf];
+          const files = [
+            mapData.filenames.player,
+            mapData.filenames.dm,
+            mapData.filenames.pdf,
+          ];
           deleteFiles(files);
         },
         5 * 60 * 1000 // 5 minutes in milliseconds

@@ -134,6 +134,7 @@ const getParams = (request) => {
         "--grid_type": gridType,
         "--quality": quality,
         "--user_seed": seed?.show ? seed.value : null,
+        "--dm_guide": dmGuideSettings?.show,
       };
       break;
 

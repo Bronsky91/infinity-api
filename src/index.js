@@ -170,6 +170,7 @@ app.get("/generate", async (req, res) => {
     middle_event,
     center,
     road_to_tavern,
+    dm_guide,
   } = req.query;
 
   const scriptPath = getScriptPathFromGenerator(type);
@@ -190,6 +191,9 @@ app.get("/generate", async (req, res) => {
       if (layout) {
         params += ` --tileGenInput ${layout}`;
       }
+      if (dm_guide) {
+        params += ` --dm_guide`;
+      }
       break;
     case GENERATOR.TAVERN:
       if (time_of_day) {
@@ -197,6 +201,9 @@ app.get("/generate", async (req, res) => {
       }
       if (season) {
         params += ` --season ${season}`;
+      }
+      if (dm_guide) {
+        params += ` --dm_guide`;
       }
       break;
     case GENERATOR.ROAD:

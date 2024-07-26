@@ -1,164 +1,201 @@
 <style>
-    .filter-button {
-        padding: 5px 5px;
-        font-size: 12px;
-        border: none;
-        background-color: #ee6c4d;
-        color: white;
-        cursor: pointer;
-        outline: none;
-        margin: 5px;
-    }
+  .filter-button {
+    padding: 5px 5px;
+    font-size: 12px;
+    border: none;
+    background-color: #ee6c4d;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    margin: 5px;
+  }
 </style>
 
 <body>
-
-    <button class="filter-button type-filter-button" value="dungeon">Dungeon</button>
-    <button class="filter-button type-filter-button" value="road">Roads</button>
-    <button class="filter-button type-filter-button" value="tavern">Tavern</button>
+  <button class="filter-button type-filter-button" value="dungeon">
+    Dungeon
+  </button>
+  <button class="filter-button type-filter-button" value="road">Roads</button>
+  <button class="filter-button type-filter-button" value="tavern">
+    Tavern
+  </button>
 </body>
-
 
 <!-- size-accordian -->
 
 <body>
-
-    <button class="filter-button size-filter-button" value="3">Small</button>
-    <button class="filter-button size-filter-button" value="5">Medium</button>
-    <button class="filter-button size-filter-button" value="7">Large</button>
-
+  <button class="filter-button size-filter-button" value="3">Small</button>
+  <button class="filter-button size-filter-button" value="5">Medium</button>
+  <button class="filter-button size-filter-button" value="7">Large</button>
 </body>
-
-
 
 <body>
-    <button class="filter-button grid-filter-button" value="none">None</button>
-    <button class="filter-button grid-filter-button" value="dotted_dark">Dotted</button>
-    <button class="filter-button grid-filter-button" value="thick_dark">Thick</button>
-    <button class="filter-button grid-filter-button" value="thin_dark">Thin</button>
+  <button class="filter-button grid-filter-button" value="none">None</button>
+  <button class="filter-button grid-filter-button" value="dotted_dark">
+    Dotted
+  </button>
+  <button class="filter-button grid-filter-button" value="thick_dark">
+    Thick
+  </button>
+  <button class="filter-button grid-filter-button" value="thin_dark">
+    Thin
+  </button>
 </body>
-
 
 <!-- theme-accordian -->
 
 <body>
-    <button class="filter-button theme-filter-button" value="archive">Archive</button>
-    <button class="filter-button theme-filter-button" value="tomb">Tomb</button>
+  <button class="filter-button theme-filter-button" value="archive">
+    Archive
+  </button>
+  <button class="filter-button theme-filter-button" value="tomb">Tomb</button>
 </body>
-
 
 <!-- tavern-time-accordian -->
 
 <body>
-    <button class="filter-button tavern-time-filter-button" value="day">Day</button>
-    <button class="filter-button tavern-time-filter-button" value="night">Night</button>
+  <button class="filter-button tavern-time-filter-button" value="day">
+    Day
+  </button>
+  <button class="filter-button tavern-time-filter-button" value="night">
+    Night
+  </button>
 </body>
 
 <!-- tavern-season-accordian -->
 
 <body>
-    <button class="filter-button tavern-season-filter-button" value="spring">Spring</button>
-    <button class="filter-button tavern-season-filter-button" value="fall">Fall</button>
-    <button class="filter-button tavern-season-filter-button" value="winter">Winter</button>
+  <button class="filter-button tavern-season-filter-button" value="spring">
+    Spring
+  </button>
+  <button class="filter-button tavern-season-filter-button" value="fall">
+    Fall
+  </button>
+  <button class="filter-button tavern-season-filter-button" value="winter">
+    Winter
+  </button>
 </body>
 
 <!-- road-event-accordian -->
 
 <body>
-    <button class="filter-button road-event-filter-button" value="true">Yes</button>
-    <button class="filter-button road-event-filter-button" value="false">No</button>
+  <button class="filter-button road-event-filter-button" value="true">
+    Yes
+  </button>
+  <button class="filter-button road-event-filter-button" value="false">
+    No
+  </button>
 </body>
-
 
 <!-- road-to-tavern-accordian -->
 
 <body>
-    <button class="filter-button road-to-tavern-filter-button" value="true">Yes</button>
-    <button class="filter-button road-to-tavern-filter-button" value="false">No</button>
+  <button class="filter-button road-to-tavern-filter-button" value="true">
+    Yes
+  </button>
+  <button class="filter-button road-to-tavern-filter-button" value="false">
+    No
+  </button>
+</body>
+
+<!-- dm-guide-accordian -->
+
+<body>
+  <button class="filter-button dm-guide-filter-button" value="true">Yes</button>
+  <button class="filter-button dm-guide-filter-button" value="false">No</button>
 </body>
 
 <!-- Options Control -->
 <style>
-    .hide-accordian {
-        display: none;
-    }
+  .hide-accordian {
+    display: none;
+  }
 
-    .filter-button.active {
-        background-color: #943b26;
-    }
+  .filter-button.active {
+    background-color: #943b26;
+  }
 </style>
 
 <script>
-    const buttonGroups = [
-        { selector: '.type-filter-button', dataId: 'type-data', },
-        { selector: '.size-filter-button', dataId: 'size-data', },
-        { selector: '.grid-filter-button', dataId: 'grid-data', },
-        { selector: '.theme-filter-button', dataId: 'theme-data', },
-        { selector: '.tavern-time-filter-button', dataId: 'tavern-time-data', },
-        { selector: '.tavern-season-filter-button', dataId: 'tavern-season-data', },
-        { selector: '.road-event-filter-button', dataId: 'middle-event-data' },
-        { selector: '.road-to-tavern-filter-button', dataId: 'road-to-tavern-data' }
+  const buttonGroups = [
+    { selector: ".type-filter-button", dataId: "type-data" },
+    { selector: ".size-filter-button", dataId: "size-data" },
+    { selector: ".grid-filter-button", dataId: "grid-data" },
+    { selector: ".theme-filter-button", dataId: "theme-data" },
+    { selector: ".tavern-time-filter-button", dataId: "tavern-time-data" },
+    { selector: ".tavern-season-filter-button", dataId: "tavern-season-data" },
+    { selector: ".road-event-filter-button", dataId: "middle-event-data" },
+    {
+      selector: ".road-to-tavern-filter-button",
+      dataId: "road-to-tavern-data",
+    },
+    { selector: ".dm-guide-filter-button", dataId: "dm-guide-data" },
+  ];
 
-    ];
+  const sizeAccordion = document.querySelector(".size-accordian");
+  const themeAccordion = document.querySelector(".theme-accordian");
+  const tavernTimeAccordion = document.querySelector(".tavern-time-accordian");
+  const tavernSeasonAccordion = document.querySelector(
+    ".tavern-season-accordian"
+  );
+  const roadEventAccordion = document.querySelector(".road-event-accordian");
+  const roadToTavernAccordion = document.querySelector(
+    ".road-to-tavern-accordian"
+  );
+  const dmGuideAccordion = document.querySelector(".dm-guide-accordian");
 
-    const sizeAccordion = document.querySelector('.size-accordian');
-    const themeAccordion = document.querySelector('.theme-accordian');
-    const tavernTimeAccordion = document.querySelector('.tavern-time-accordian');
-    const tavernSeasonAccordion = document.querySelector('.tavern-season-accordian')
-    const roadEventAccordion = document.querySelector('.road-event-accordian')
-    const roadToTavernAccordion = document.querySelector('.road-to-tavern-accordian')
+  buttonGroups.forEach((group) => {
+    const buttons = document.querySelectorAll(group.selector);
+    const dataElement = document.getElementById(group.dataId);
 
-    buttonGroups.forEach(group => {
-        const buttons = document.querySelectorAll(group.selector);
-        const dataElement = document.getElementById(group.dataId);
+    buttons.forEach((button) => {
+      button.addEventListener("click", function () {
+        buttons.forEach((btn) => btn.classList.remove("active"));
+        this.classList.add("active");
+        dataElement.textContent = this.value;
 
-        buttons.forEach(button => {
-            button.addEventListener('click', function () {
+        if (group.selector === ".type-filter-button") {
+          if (this.value == "dungeon") {
+            themeAccordion.classList.remove("hide-accordian");
+            dmGuideAccordion.classList.remove("hide-accordian");
+          } else if (this.value !== "dungeon") {
+            themeAccordion.classList.add("hide-accordian");
+            dmGuideAccordion.classList.add("hide-accordian");
+          }
+          if (this.value === "tavern") {
+            sizeAccordion.classList.add("hide-accordian");
+            tavernTimeAccordion.classList.remove("hide-accordian");
+            tavernSeasonAccordion.classList.remove("hide-accordian");
+            dmGuideAccordion.classList.remove("hide-accordian");
+          } else if (this.value !== "tavern") {
+            sizeAccordion.classList.remove("hide-accordian");
+            tavernTimeAccordion.classList.add("hide-accordian");
+            tavernSeasonAccordion.classList.add("hide-accordian");
+            dmGuideAccordion.classList.add("hide-accordian");
+          }
 
-                buttons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                dataElement.textContent = this.value;
-
-                if (group.selector === '.type-filter-button') {
-                    if (this.value == 'dungeon') {
-                        themeAccordion.classList.remove('hide-accordian');
-                    } else if (this.value !== 'dungeon') {
-                        themeAccordion.classList.add('hide-accordian');
-                    }
-                    if (this.value === 'tavern') {
-                        sizeAccordion.classList.add('hide-accordian');
-                        tavernTimeAccordion.classList.remove('hide-accordian');
-                        tavernSeasonAccordion.classList.remove('hide-accordian')
-                    } else if (this.value !== 'tavern') {
-                        sizeAccordion.classList.remove('hide-accordian');
-                        tavernTimeAccordion.classList.add('hide-accordian');
-                        tavernSeasonAccordion.classList.add('hide-accordian')
-                    }
-
-                    if (this.value === 'road') {
-                        roadEventAccordion.classList.remove('hide-accordian');
-                        roadToTavernAccordion.classList.remove('hide-accordian');
-                    } else if (this.value !== 'road') {
-                        roadEventAccordion.classList.add('hide-accordian');
-                        roadToTavernAccordion.classList.add('hide-accordian');
-                    }
-                }
-            });
-        });
+          if (this.value === "road") {
+            roadEventAccordion.classList.remove("hide-accordian");
+            roadToTavernAccordion.classList.remove("hide-accordian");
+          } else if (this.value !== "road") {
+            roadEventAccordion.classList.add("hide-accordian");
+            roadToTavernAccordion.classList.add("hide-accordian");
+          }
+        }
+      });
     });
+  });
 </script>
 
-
-
-
 <!-- STATE -->
-<div id="current-file-name" class="state" style="display: none;"></div>
+<div id="current-file-name" class="state" style="display: none"></div>
 
-<div id="type-data" class="state" style="display: none;"></div>
-<div id="size-data" class="state" style="display: none;"></div>
-<div id="grid-data" class="state" style="display: none;"></div>
-<div id="theme-data" class="state" style="display: none;"></div>
-<div id="tavern-time-data" class="state" style="display: none;"></div>
-<div id="tavern-season-data" class="state" style="display: none;"></div>
-<div id="middle-event-data" class="state" style="display: none;"></div>
-<div id="road-to-tavern-data" class="state" style="display: none;"></div>
+<div id="type-data" class="state" style="display: none"></div>
+<div id="size-data" class="state" style="display: none"></div>
+<div id="grid-data" class="state" style="display: none"></div>
+<div id="theme-data" class="state" style="display: none"></div>
+<div id="tavern-time-data" class="state" style="display: none"></div>
+<div id="tavern-season-data" class="state" style="display: none"></div>
+<div id="middle-event-data" class="state" style="display: none"></div>
+<div id="road-to-tavern-data" class="state" style="display: none"></div>
+<div id="dm-guide-data" class="state" style="display: none"></div>

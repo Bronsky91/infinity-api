@@ -49,7 +49,7 @@ function enqueue_custom_scripts() {
 
 $api_url = 'https://infinity.arcanecollector.com';
 
-function download_file_from_api() {
+function generate_map_from_api() {
     global $api_url;
 
     // Verify nonce for security
@@ -87,9 +87,47 @@ function download_file_from_api() {
     if (isset($_GET['road_to_tavern'])) {
         $params['road_to_tavern'] = sanitize_text_field($_GET['road_to_tavern']);
     }
+    if (isset($_GET['dm_guide'])) {
+        $params['dm_guide'] = sanitize_text_field($_GET['dm_guide']);
+    }
 
     // Construct the URL with query parameters if any exist
     $url = $api_url . '/generate';
+    if (!empty($params)) {
+        $url .= '?' . http_build_query($params);
+    }
+
+    // Initialize cURL session
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+
+    // Execute cURL request
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        echo 'Error:' . curl_error($ch);
+    } else {
+        header('Content-Type: application/json'); // Adjust content type as needed
+        echo $response;
+    }
+
+    // Close cURL session
+    curl_close($ch);
+
+    // Terminate to avoid further output
+    wp_die();
+}
+
+function download_file_from_api() {
+    global $api_url;
+
+    // Verify nonce for security
+    check_ajax_referer('security_nonce', 'security');
+
+    // Construct the URL with query parameters if any exist
+    $url = $api_url . '/download';
     if (!empty($params)) {
         $url .= '?' . http_build_query($params);
     }
@@ -185,6 +223,8 @@ add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
 
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 
+add_action('wp_ajax_generate_map', 'generate_map_from_api');
+add_action('wp_ajax_nopriv_generate_map', 'generate_map_from_api');
 add_action('wp_ajax_download_file', 'download_file_from_api');
 add_action('wp_ajax_nopriv_download_file', 'download_file_from_api');
 add_action('wp_ajax_send_email', 'send_email_via_api');

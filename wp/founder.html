@@ -1,101 +1,113 @@
 <script>
   jQuery(document).ready(function ($) {
     $(".map-loading").hide();
-    $('.map-complete').hide();
+    $(".map-complete").hide();
+    $(".downloadGuideBtn").hide();
 
     $(".generateBtn").on("click", function (e) {
       e.preventDefault();
 
       var queryParams = {};
-      var type = $('#type-data').text();
-      var size = $('#size-data').text();
-      var grid = $('#grid-data').text();
-      var theme = $('#theme-data').text();
-      var layout = $('#layout-data').text();
-      var time_of_day = $('#tavern-time-data').text()
-      var season = $('#tavern-season-data').text()
-      var middle_event = $('#middle-event-data').text()
-      var center = $('#center-dungeon-data').text()
-      var road_to_tavern = $('#road-to-tavern-data').text()
+      var type = $("#type-data").text();
+      var size = $("#size-data").text();
+      var grid = $("#grid-data").text();
+      var theme = $("#theme-data").text();
+      var layout = $("#layout-data").text();
+      var time_of_day = $("#tavern-time-data").text();
+      var season = $("#tavern-season-data").text();
+      var middle_event = $("#middle-event-data").text();
+      var center = $("#center-dungeon-data").text();
+      var road_to_tavern = $("#road-to-tavern-data").text();
+      var dm_guide = $("#dm-guide-data").text();
 
       // Add parameters to the queryParams object if they are not empty
       if (type) {
-        queryParams.type = type
+        queryParams.type = type;
       }
       if (size) {
-        queryParams.size = size
+        queryParams.size = size;
       }
       if (grid) {
-        queryParams.grid = grid
+        queryParams.grid = grid;
       }
       if (theme) {
-        queryParams.theme = theme
+        queryParams.theme = theme;
       }
       if (layout) {
-        queryParams.layout = layout
+        queryParams.layout = layout;
       }
       if (time_of_day) {
-        queryParams.time_of_day = time_of_day
+        queryParams.time_of_day = time_of_day;
       }
       if (middle_event) {
-        queryParams.middle_event = middle_event
+        queryParams.middle_event = middle_event;
       }
       if (road_to_tavern) {
-        queryParams.road_to_tavern = road_to_tavern
+        queryParams.road_to_tavern = road_to_tavern;
       }
       if (season) {
-        queryParams.season = season
+        queryParams.season = season;
       }
       if (center) {
-        queryParams.center = center
+        queryParams.center = center;
+      }
+      if (dm_guide) {
+        queryParams.dm_guide = dm_guide;
       }
 
-      $('.map-complete').hide();
+      $(".map-complete").hide();
+      $(".downloadGuideBtn").hide();
 
       // Hide Preview
-      $(".map-preview").hide()
+      $(".map-preview").hide();
 
       // Show loading indicator
       $(".map-loading").show();
 
       var url = infinity_vars.ajaxurl;
       if (Object.keys(queryParams).length > 0) {
-        url += '?' + $.param(queryParams);
+        url += "?" + $.param(queryParams);
       }
 
       $.ajax({
         url,
         type: "POST",
         data: {
-          action: "download_file",
+          action: "generate_map",
           security: infinity_vars.security,
         },
         success: function (response, status, xhr) {
+          // TODO: format response that is JSON data
           console.log("response", response);
-          var filename = xhr.getResponseHeader('Filename')
-          $("#current-file-name").text(filename)
 
-          // Create a blob from the response
-          var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
-          var url = URL.createObjectURL(blob);
+          // var filename = xhr.getResponseHeader("Filename");
+          // $("#current-file-name").text(filename);
 
-          // hide loading indicator
-          $(".map-loading").hide();
+          // // Create a blob from the response
+          // var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
+          // var url = URL.createObjectURL(blob);
 
-          // Display the image
-          $("#generatedMap").attr("src", url)
+          // // hide loading indicator
+          // $(".map-loading").hide();
 
-          // Link img to Download button
-          $(".downloadMapBtn").attr("href", url).attr("download", filename)
+          // // Display the image
+          // $("#generatedMap").attr("src", url);
 
-          $('.map-complete').show();
+          // // Link img to Download button
+          // $(".downloadMapBtn").attr("href", url).attr("download", filename);
+
+          // if (dm_guide) {
+          //   $(".downloadGuideBtn").attr("href", url).attr("download", filename);
+          //   $(".downloadGuideBtn").show();
+          // }
+          // $(".map-complete").show();
         },
         error: function (xhr, status, error) {
           console.error("AJAX error:", error);
           alert("An error occurred.");
         },
         xhrFields: {
-          responseType: "blob", // Important to handle binary data correctly
+          responseType: "json", // Important to handle binary data correctly
         },
       });
 
@@ -114,7 +126,6 @@
       //   });
 
       // })
-
     });
   });
 </script>

@@ -21,7 +21,6 @@ const {
   getParams,
   outputDir,
   deleteFiles,
-  sanitizeFilename,
 } = require("./utils");
 
 const API_KEY = process.env.API_KEY;
@@ -319,9 +318,7 @@ app.post("/generate", (req, res) => {
 });
 
 app.get("/download", async (req, res) => {
-  let { filename } = req.query;
-
-  filename = sanitizeFilename(filename);
+  const { filename } = req.query;
 
   const generatedFilePath = outputDir + filename;
 

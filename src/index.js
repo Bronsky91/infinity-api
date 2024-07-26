@@ -254,45 +254,24 @@ app.get("/generate", async (req, res) => {
         console.error(`Error executing Python script: ${error.message}`);
         return res.status(500).send("Error occurred while generating the map");
       }
+
       const mapData = JSON.parse(stdout);
       console.log("MAP DATA", mapData);
-      const filename = mapData.filenames.player;
 
-      // stdout should contain the path to the generated file
-      const generatedFilePath = outputDir + filename;
+      // Schedule file deletion after 5 minutes
+      setTimeout(
+        () => {
+          const files = [
+            mapData.filenames.player,
+            mapData.filenames.dm,
+            mapData.filenames.pdf,
+          ];
+          deleteFiles(files);
+        },
+        5 * 60 * 1000 // 5 minutes in milliseconds
+      );
 
-      // Check if the file exists
-      if (fs.existsSync(generatedFilePath)) {
-        res.setHeader(
-          "Content-Disposition",
-          `attachment; filename="${filename}"`
-        );
-        res.setHeader("Filename", filename);
-
-        // Send the file to the client
-        res.download(generatedFilePath, filename, (err) => {
-          if (err) {
-            console.error("Error occurred while sending the file:", err);
-            return res
-              .status(500)
-              .send("Error occurred while sending the file");
-          }
-
-          // Schedule file deletion after 5 minutes
-          setTimeout(() => {
-            fs.unlink(generatedFilePath, (err) => {
-              if (err) {
-                console.error("Error occurred while deleting the file:", err);
-              } else {
-                console.log(`File ${filename} deleted successfully`);
-              }
-            });
-          }, 5 * 60 * 1000); // 5 minutes in milliseconds
-        });
-      } else {
-        console.error("Generated file not found:", generatedFilePath);
-        res.status(500).send("Generated file not found");
-      }
+      res.send(mapData);
     }
   );
 });

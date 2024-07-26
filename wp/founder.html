@@ -106,9 +106,7 @@
           console.error("AJAX error:", error);
           alert("An error occurred.");
         },
-        xhrFields: {
-          responseType: "json", // Important to handle binary data correctly
-        },
+        dataType: "json",
       });
 
       // $(".downloadMapBtn").on('click', function (e) {

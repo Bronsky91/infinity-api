@@ -165,10 +165,16 @@ const getParams = (request) => {
   return paramString;
 };
 
+const sanitizeFilename = (filename) => {
+  // Replace any character that is not a word character or a dot with an underscore
+  return filename.replace(/[^\w.-]/g, "_");
+};
+
 module.exports = {
   getParams,
   getScriptPathFromGenerator,
   azDateTime,
   deleteFiles,
   outputDir,
+  sanitizeFilename,
 };

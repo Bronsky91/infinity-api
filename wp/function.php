@@ -126,11 +126,10 @@ function download_file_from_api() {
     // Verify nonce for security
     check_ajax_referer('security_nonce', 'security');
 
+    $filename = isset($_GET['filename']) ? sanitize_text_field($_GET['filename']) : '';
+
     // Construct the URL with query parameters if any exist
-    $url = $api_url . '/download';
-    if (!empty($params)) {
-        $url .= '?' . http_build_query($params);
-    }
+    $url = $api_url . '/download?filename=' . urlencode($filename);
 
     // Initialize cURL session
     $ch = curl_init();

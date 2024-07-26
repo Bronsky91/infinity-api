@@ -155,25 +155,25 @@
         dataElement.textContent = this.value;
 
         if (group.selector === ".type-filter-button") {
-          if (this.value == "dungeon") {
+          if (this.value === "dungeon") {
             themeAccordion.classList.remove("hide-accordian");
-            dmGuideAccordion.classList.remove("hide-accordian");
           } else if (this.value !== "dungeon") {
             themeAccordion.classList.add("hide-accordian");
-            dmGuideAccordion.classList.add("hide-accordian");
           }
           if (this.value === "tavern") {
             sizeAccordion.classList.add("hide-accordian");
             tavernTimeAccordion.classList.remove("hide-accordian");
             tavernSeasonAccordion.classList.remove("hide-accordian");
-            dmGuideAccordion.classList.remove("hide-accordian");
           } else if (this.value !== "tavern") {
             sizeAccordion.classList.remove("hide-accordian");
             tavernTimeAccordion.classList.add("hide-accordian");
             tavernSeasonAccordion.classList.add("hide-accordian");
+          }
+          if (this.value === "dungeon" || this.value === "tavern") {
+            dmGuideAccordion.classList.remove("hide-accordian");
+          } else if (this.value !== "dungeon" && this.value !== "tavern") {
             dmGuideAccordion.classList.add("hide-accordian");
           }
-
           if (this.value === "road") {
             roadEventAccordion.classList.remove("hide-accordian");
             roadToTavernAccordion.classList.remove("hide-accordian");
@@ -189,6 +189,8 @@
 
 <!-- STATE -->
 <div id="current-file-name" class="state" style="display: none"></div>
+<div id="current-dm-file-name" class="state" style="display: none"></div>
+<div id="current-guide-name" class="state" style="display: none"></div>
 
 <div id="type-data" class="state" style="display: none"></div>
 <div id="size-data" class="state" style="display: none"></div>

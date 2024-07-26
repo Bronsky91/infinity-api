@@ -21,6 +21,7 @@ const {
   getParams,
   outputDir,
   deleteFiles,
+  sanitizeFilename,
 } = require("./utils");
 
 const API_KEY = process.env.API_KEY;
@@ -318,7 +319,10 @@ app.post("/generate", (req, res) => {
 });
 
 app.get("/download", async (req, res) => {
-  const { filename } = req.query;
+  let { filename } = req.query;
+
+  filename = sanitizeFilename(filename);
+
   const generatedFilePath = outputDir + filename;
 
   // Check if the file exists

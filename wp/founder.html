@@ -1,8 +1,55 @@
+<style>
+  /* Hide on Mobile */
+  @media (max-width: 767px) {
+    .hide-mobile {
+      display: none !important;
+    }
+    .show-mobile {
+      display: inline-block !important;
+    }
+  }
+
+  /* Hide on Desktop */
+  @media (min-width: 768px) {
+    .hide-desktop {
+      display: none !important;
+    }
+    .show-desktop {
+      display: inline-block !important;
+    }
+  }
+
+  /* Utility classes for jQuery toggling */
+  .hidden {
+    display: none !important;
+  }
+</style>
+
 <script>
   jQuery(document).ready(function ($) {
+    function downloadFile(url, success) {
+      $.ajax({
+        url,
+        type: "POST",
+        data: {
+          action: "download_file",
+          security: infinity_vars.security,
+        },
+        success,
+        error: function (xhr, status, error) {
+          console.error("AJAX error:", error);
+          alert("An error occurred.");
+        },
+        xhrFields: {
+          responseType: "blob",
+        },
+      });
+    }
+
     $(".map-loading").hide();
     $(".map-complete").hide();
-    $(".downloadGuideBtn").hide();
+    $(".downloadMapBtn").addClass("hidden");
+    $(".downloadGuideBtn").addClass("hidden");
 
     $(".generateBtn").on("click", function (e) {
       e.preventDefault();
@@ -55,8 +102,10 @@
         queryParams.dm_guide = dm_guide;
       }
 
+      $(".generateBtn").hide();
       $(".map-complete").hide();
-      $(".downloadGuideBtn").hide();
+      $(".downloadMapBtn").addClass("hidden");
+      $(".downloadGuideBtn").addClass("hidden");
 
       // Hide Preview
       $(".map-preview").hide();
@@ -80,30 +129,56 @@
           // TODO: format response that is JSON data
           console.log("response", response);
 
-          // var filename = xhr.getResponseHeader("Filename");
-          // $("#current-file-name").text(filename);
+          const { player, pdf } = response.filenames;
 
-          // // Create a blob from the response
-          // var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
-          // var url = URL.createObjectURL(blob);
+          $("#current-file-name").text(player);
 
-          // // hide loading indicator
-          // $(".map-loading").hide();
+          if (pdf) {
+            $("#current-guide-name").text(pdf);
+          }
 
-          // // Display the image
-          // $("#generatedMap").attr("src", url);
+          var downloadUrl = infinity_vars.ajaxurl;
+          downloadUrl += "?" + $.param({ filename: player });
 
-          // // Link img to Download button
-          // $(".downloadMapBtn").attr("href", url).attr("download", filename);
+          downloadFile(downloadUrl, function (response, status, xhr) {
+            var filename = xhr.getResponseHeader("Filename");
 
-          // if (dm_guide) {
-          //   $(".downloadGuideBtn").attr("href", url).attr("download", filename);
-          //   $(".downloadGuideBtn").show();
-          // }
-          // $(".map-complete").show();
+            // Create a blob from the response
+            var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
+            var url = URL.createObjectURL(blob);
+
+            // hide loading indicator
+            $(".map-loading").hide();
+            // Display the image
+            $("#generatedMap").attr("src", url);
+            // Link img to Download button
+            $(".downloadMapBtn").attr("href", url).attr("download", filename);
+            $(".downloadMapBtn").removeClass("hidden");
+            $(".map-complete").show();
+            $(".generateBtn").show();
+          });
+
+          if (pdf) {
+            var downloadPdfUrl = infinity_vars.ajaxurl;
+            downloadPdfUrl += "?" + $.param({ filename: pdf });
+            downloadFile(downloadPdfUrl, function (response, status, xhr) {
+              var filename = xhr.getResponseHeader("Filename");
+
+              // Create a blob from the response
+              var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
+              var url = URL.createObjectURL(blob);
+
+              // Link img to Download button
+              $(".downloadGuideBtn")
+                .attr("href", url)
+                .attr("download", filename);
+              $(".downloadGuideBtn").removeClass("hidden");
+            });
+          }
         },
         error: function (xhr, status, error) {
           console.error("AJAX error:", error);
+          $(".generateBtn").show();
           alert("An error occurred.");
         },
         dataType: "json",

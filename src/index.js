@@ -173,8 +173,6 @@ app.get("/generate", async (req, res) => {
     dm_guide,
   } = req.query;
 
-  console.log("req.query", req.query);
-
   const scriptPath = getScriptPathFromGenerator(type);
   let params = "";
 
@@ -193,7 +191,7 @@ app.get("/generate", async (req, res) => {
       if (layout) {
         params += ` --tileGenInput ${layout}`;
       }
-      if (dm_guide) {
+      if (dm_guide == "true") {
         params += ` --dm_guide`;
       }
       break;
@@ -204,7 +202,7 @@ app.get("/generate", async (req, res) => {
       if (season) {
         params += ` --season ${season}`;
       }
-      if (dm_guide) {
+      if (dm_guide == "true") {
         params += ` --dm_guide`;
       }
       break;

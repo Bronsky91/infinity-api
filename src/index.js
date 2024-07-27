@@ -173,6 +173,8 @@ app.get("/generate", async (req, res) => {
     dm_guide,
   } = req.query;
 
+  console.log("req.query", req.query);
+
   const scriptPath = getScriptPathFromGenerator(type);
   let params = "";
 

@@ -297,11 +297,7 @@ app.post("/generate", (req, res) => {
         return res.status(500).send("Error occurred while generating the map");
       }
 
-      console.log("stdout", stdout);
-
       const mapData = JSON.parse(stdout);
-
-      console.log("MAP DATA", mapData);
 
       // Schedule file deletion after 5 minutes
       setTimeout(

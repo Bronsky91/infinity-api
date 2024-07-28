@@ -143,7 +143,7 @@
             var filename = xhr.getResponseHeader("Filename");
 
             // Create a blob from the response
-            var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
+            var blob = new Blob([response], { type: "image/png" });
             var url = URL.createObjectURL(blob);
 
             // hide loading indicator
@@ -164,7 +164,7 @@
               var filename = xhr.getResponseHeader("Filename");
 
               // Create a blob from the response
-              var blob = new Blob([response], { type: "image/jpeg" }); // Adjust type as needed
+              var blob = new Blob([response], { type: "application/pdf" });
               var url = URL.createObjectURL(blob);
 
               // Link img to Download button

@@ -299,6 +299,8 @@ app.post("/generate", (req, res) => {
 
       const mapData = JSON.parse(stdout);
 
+      console.log("MAP DATA", mapData);
+
       // Schedule file deletion after 5 minutes
       setTimeout(
         () => {
